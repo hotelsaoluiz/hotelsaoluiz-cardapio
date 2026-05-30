@@ -23,17 +23,17 @@ export function DecoHeader() {
         <HotelLogo size={52} borderColor="var(--gold)" />
       </div>
 
-      {/* 3. HOTEL SÃO LUIZ: font-ui, 9px, letter-spacing 0.4em, gold, uppercase */}
+      {/* 3. HOTEL SÃO LUIZ: font-ui, 11px, letter-spacing 0.35em, gold, uppercase */}
       <h2
         style={{
           fontFamily: 'var(--font-ui)',
-          fontSize: '9px',
+          fontSize: '11px',
           fontWeight: '400',
-          letterSpacing: '0.4em',
+          letterSpacing: '0.35em',
           color: 'var(--gold)',
           textTransform: 'uppercase',
-          margin: '0 0 12px 0',
-          paddingLeft: '0.4em', // offset right padding to keep perfectly centered
+          margin: '0 0 14px 0',
+          paddingLeft: '0.35em', // offset right padding to keep perfectly centered
         }}
       >
         {hotelName}
@@ -44,50 +44,51 @@ export function DecoHeader() {
         <DecoOrnament width={150} />
       </div>
 
-      {/* 5. Restaurante Don Fernando: font-display, 26px, 300 italic, ivory */}
+      {/* 5. Restaurante Don Fernando: font-display, 32px, 300 italic, ivory */}
       <h1
         style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '26px',
+          fontSize: '32px',
           fontWeight: '300',
           fontStyle: 'italic',
           color: 'var(--ivory)',
-          margin: '0 0 8px 0',
+          margin: '0 0 10px 0',
         }}
       >
         {restaurantName}
       </h1>
 
-      {/* 6. Gastronomia & Tradição: font-ui, 9px, letter-spacing 0.35em, gold, uppercase */}
+      {/* 6. Gastronomia & Tradição: font-ui, 11px, letter-spacing 0.3em, gold, uppercase */}
       <p
         style={{
           fontFamily: 'var(--font-ui)',
-          fontSize: '9px',
+          fontSize: '11px',
           fontWeight: '400',
-          letterSpacing: '0.35em',
+          letterSpacing: '0.3em',
           color: 'var(--gold)',
           textTransform: 'uppercase',
-          margin: '0 0 16px 0',
-          paddingLeft: '0.35em', // offset right padding to keep perfectly centered
+          margin: '0 0 18px 0',
+          paddingLeft: '0.3em', // offset right padding to keep perfectly centered
         }}
       >
         Gastronomia & Tradição
       </p>
 
-      {/* 7. Geometric strip: 5 divs [36px, 6px, 6px, 6px, 36px], height 2px, gold, gap 3px */}
+      {/* 7. Geometric strip: Symmetrical 1px lines + three 45-deg rotated 5px squares (diamonds) */}
       <div
         style={{
           display: 'flex',
-          gap: '3px',
+          gap: '8px',
           justifyContent: 'center',
           alignItems: 'center',
+          marginTop: '4px',
         }}
       >
-        <div style={{ width: '36px', height: '2px', backgroundColor: 'var(--gold)' }} />
-        <div style={{ width: '6px', height: '2px', backgroundColor: 'var(--gold)' }} />
-        <div style={{ width: '6px', height: '2px', backgroundColor: 'var(--gold)' }} />
-        <div style={{ width: '6px', height: '2px', backgroundColor: 'var(--gold)' }} />
-        <div style={{ width: '36px', height: '2px', backgroundColor: 'var(--gold)' }} />
+        <div style={{ width: '40px', height: '1px', backgroundColor: 'var(--gold)', opacity: 0.85 }} />
+        <div style={{ width: '5px', height: '5px', transform: 'rotate(45deg)', backgroundColor: 'var(--gold)' }} />
+        <div style={{ width: '5px', height: '5px', transform: 'rotate(45deg)', backgroundColor: 'var(--gold)' }} />
+        <div style={{ width: '5px', height: '5px', transform: 'rotate(45deg)', backgroundColor: 'var(--gold)' }} />
+        <div style={{ width: '40px', height: '1px', backgroundColor: 'var(--gold)', opacity: 0.85 }} />
       </div>
     </header>
   )
