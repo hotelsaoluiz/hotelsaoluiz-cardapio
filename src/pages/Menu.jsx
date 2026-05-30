@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useCategories } from '../hooks/useCategories'
 import { useProducts } from '../hooks/useProducts'
 import DecoHeader from '../components/menu/DecoHeader'
@@ -206,6 +207,26 @@ export function Menu() {
         >
           © {new Date().getFullYear()} {import.meta.env.VITE_HOTEL_NAME || 'Hotel São Luiz'}. Todos os direitos reservados.
         </p>
+
+        <Link
+          to="/login"
+          style={{
+            fontFamily: 'var(--font-ui)',
+            fontSize: '7px',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            color: 'var(--gold-pale)',
+            textDecoration: 'none',
+            display: 'inline-block',
+            marginTop: '12px',
+            opacity: 0.35,
+            transition: 'opacity 200ms ease',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+          onMouseLeave={(e) => e.currentTarget.style.opacity = '0.35'}
+        >
+          Acesso Restrito
+        </Link>
       </footer>
     </div>
   )
