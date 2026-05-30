@@ -1,39 +1,26 @@
 import React from 'react'
 import { 
   CupSoda, 
-  GlassWater, 
-  Wine, 
   UtensilsCrossed, 
-  Utensils, 
   Pizza, 
   Soup, 
-  Salad, 
-  Egg, 
   Fish, 
   Beef, 
   Wheat, 
-  Flame, 
-  Cake 
+  Cake,
+  Utensils
 } from 'lucide-react'
 
 // Helper function mapping category names to visual icons dynamically
 const getCategoryIcon = (categoryName) => {
   const name = categoryName.toLowerCase()
   if (name.includes('bebida')) return <CupSoda size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('uisque') || name.includes('uísque')) return <GlassWater size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('espumante')) return <Wine size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('vinho')) return <Wine size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('entrada')) return <UtensilsCrossed size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('porç') || name.includes('porc')) return <Utensils size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('lanche')) return <Pizza size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('sopa')) return <Soup size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('salada')) return <Salad size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('omelete')) return <Egg size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('risoto')) return <Soup size={13} style={{ flexShrink: 0 }} />
+  if (name.includes('entrada') || name.includes('petisco')) return <UtensilsCrossed size={13} style={{ flexShrink: 0 }} />
+  if (name.includes('grelhado') || name.includes('carne')) return <Beef size={13} style={{ flexShrink: 0 }} />
   if (name.includes('peixe') || name.includes('mar')) return <Fish size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('carne')) return <Beef size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('massa')) return <Wheat size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('frango')) return <Flame size={13} style={{ flexShrink: 0 }} />
+  if (name.includes('massa') || name.includes('risoto')) return <Wheat size={13} style={{ flexShrink: 0 }} />
+  if (name.includes('sopa')) return <Soup size={13} style={{ flexShrink: 0 }} />
+  if (name.includes('lanche')) return <Pizza size={13} style={{ flexShrink: 0 }} />
   if (name.includes('sobremesa')) return <Cake size={13} style={{ flexShrink: 0 }} />
   return <Utensils size={13} style={{ flexShrink: 0 }} />
 }
