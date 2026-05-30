@@ -15,6 +15,7 @@ const schema = z.object({
     invalid_type_error: 'Informe um preço',
   }).positive('Preço inválido')),
   category_id: z.string().uuid().optional().nullable().or(z.literal('')),
+  subcategory: z.string().optional().or(z.literal('')),
   available: z.boolean().default(true),
 })
 
@@ -39,6 +40,7 @@ export function ProductForm({
       description: initialData?.description || '',
       price: initialData?.price || '',
       category_id: initialData?.category_id || '',
+      subcategory: initialData?.subcategory || '',
       available: initialData?.available !== undefined ? initialData.available : true,
     },
   })
@@ -50,6 +52,7 @@ export function ProductForm({
       setValue('description', initialData.description || '')
       setValue('price', initialData.price)
       setValue('category_id', initialData.category_id || '')
+      setValue('subcategory', initialData.subcategory || '')
       setValue('available', initialData.available)
       setImageUrl(initialData.image_url || '')
     }
@@ -101,7 +104,7 @@ export function ProductForm({
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Price Input */}
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wider text-navy mb-1">
@@ -116,7 +119,7 @@ export function ProductForm({
             placeholder="Ex: 89.90"
           />
           {errors.price && (
-            <p className="text-red-600 text-xs mt-1 font-medium">{errors.price.message}</p>
+            <p className="text-red-650 text-xs mt-1 font-medium">{errors.price.message}</p>
           )}
         </div>
 
@@ -138,7 +141,24 @@ export function ProductForm({
             ))}
           </select>
           {errors.category_id && (
-            <p className="text-red-600 text-xs mt-1 font-medium">{errors.category_id.message}</p>
+            <p className="text-red-650 text-xs mt-1 font-medium">{errors.category_id.message}</p>
+          )}
+        </div>
+
+        {/* Subcategory Input */}
+        <div>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-navy mb-1">
+            Subcategoria
+          </label>
+          <input
+            type="text"
+            {...register('subcategory')}
+            disabled={isSaving}
+            className="w-full px-3 py-2 border border-slate-300 rounded-admin focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy text-sm transition-all"
+            placeholder="Ex: Vinhos, Pizzas"
+          />
+          {errors.subcategory && (
+            <p className="text-red-650 text-xs mt-1 font-medium">{errors.subcategory.message}</p>
           )}
         </div>
       </div>

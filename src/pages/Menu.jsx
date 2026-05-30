@@ -4,6 +4,7 @@ import { useCategories } from '../hooks/useCategories'
 import { useProducts } from '../hooks/useProducts'
 import DecoHeader from '../components/menu/DecoHeader'
 import CategoryNav from '../components/menu/CategoryNav'
+import SubcategoryNav from '../components/menu/SubcategoryNav'
 import SectionDivider from '../components/menu/SectionDivider'
 import ProductCard from '../components/menu/ProductCard'
 
@@ -12,6 +13,7 @@ export function Menu() {
   const { products, isLoading: isLoadingProducts, error: errorProducts } = useProducts()
   
   const [activeCategoryId, setActiveCategoryId] = useState('')
+  const [activeSubcategory, setActiveSubcategory] = useState('')
 
   // Automatically select the first category once categories load
   useEffect(() => {
@@ -20,11 +22,24 @@ export function Menu() {
     }
   }, [categories, activeCategoryId])
 
+  // Get active products for the currently selected category to calculate its subcategories
+  const getActiveProductsOfSelectedCategory = () => {
+    if (!products || !activeCategoryId) return []
+    return products.filter((p) => p.category_id === activeCategoryId && p.available)
+  }
+
+  const activeProducts = getActiveProductsOfSelectedCategory()
+  const activeSubcategories = Array.from(
+    new Set(activeProducts.map((p) => p.subcategory).filter(Boolean))
+  )
+
   const handleSelectCategory = (categoryId) => {
     setActiveCategoryId(categoryId)
+    setActiveSubcategory('') // Reset active subcategory when switching main category
+    
     const element = document.getElementById(`category-section-${categoryId}`)
     if (element) {
-      const offset = 48 // Approximate height of the sticky CategoryNav
+      const offset = 48 // Approximately height of CategoryNav
       const bodyRect = document.body.getBoundingClientRect().top
       const elementRect = element.getBoundingClientRect().top
       const elementPosition = elementRect - bodyRect
@@ -37,13 +52,47 @@ export function Menu() {
     }
   }
 
+  const handleSelectSubcategory = (subName) => {
+    setActiveSubcategory(subName)
+    
+    const elementId = subName 
+      ? `subcategory-section-${activeCategoryId}-${subName}`
+      : `category-section-${activeCategoryId}`
+      
+    const element = document.getElementById(elementId)
+    if (element) {
+      // Calculate scroll offset taking both sticky navbars into account
+      const categoryNavHeight = 44
+      const subcategoryNavHeight = activeSubcategories.length > 1 ? 34 : 0
+      const totalOffset = categoryNavHeight + subcategoryNavHeight + 8
+      
+      const bodyRect = document.body.getBoundingClientRect().top
+      const elementRect = element.getBoundingClientRect().top
+      const elementPosition = elementRect - bodyRect
+      const offsetPosition = elementPosition - totalOffset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+    }
+  }
+
   const isLoading = isLoadingCategories || isLoadingProducts
   // Silent error state for client: no raw logs or stacks, just a clean empty cardapio state
   const hasError = errorCategories || errorProducts
 
-  // Filter products by category to verify layout groups
-  const getProductsByCategory = (categoryId) => {
-    return products.filter((prod) => prod.category_id === categoryId)
+  // Group products of a category by subcategory
+  const getGroupedProductsByCategory = (categoryId) => {
+    const categoryProducts = products.filter((prod) => prod.category_id === categoryId && prod.available)
+    const groups = {}
+    
+    categoryProducts.forEach((prod) => {
+      const sub = prod.subcategory || 'Outros'
+      if (!groups[sub]) groups[sub] = []
+      groups[sub].push(prod)
+    })
+    return groups
   }
 
   // Pure Skeleton Loader conforming to requirements
@@ -83,7 +132,7 @@ export function Menu() {
       {/* 1. DecoHeader at the top */}
       <DecoHeader />
 
-      {/* 2. CategoryNav sticky top: 0, z-index: 10 */}
+      {/* 2. Sticky Double-Decker Navbars */}
       <div
         style={{
           position: 'sticky',
@@ -93,11 +142,20 @@ export function Menu() {
         }}
       >
         {!isLoading && !hasError && categories.length > 0 && (
-          <CategoryNav
-            categories={categories}
-            activeCategoryId={activeCategoryId}
-            onSelectCategory={handleSelectCategory}
-          />
+          <>
+            <CategoryNav
+              categories={categories}
+              activeCategoryId={activeCategoryId}
+              onSelectCategory={handleSelectCategory}
+            />
+            {activeCategoryId && activeSubcategories.length > 1 && (
+              <SubcategoryNav
+                subcategories={activeSubcategories}
+                activeSubcategory={activeSubcategory}
+                onSelectSubcategory={handleSelectSubcategory}
+              />
+            )}
+          </>
         )}
       </div>
 
@@ -148,24 +206,61 @@ export function Menu() {
         ) : (
           /* Category Sections and Product Cards */
           categories.map((category) => {
-            const categoryProducts = getProductsByCategory(category.id)
-            if (categoryProducts.length === 0) return null
+            const grouped = getGroupedProductsByCategory(category.id)
+            const subKeys = Object.keys(grouped)
+            if (subKeys.length === 0) return null
 
             return (
               <section
                 key={category.id}
                 id={`category-section-${category.id}`}
-                style={{ scrollMarginTop: '60px' }} // Provides breathing space after scrolling
+                style={{ scrollMarginTop: '100px' }} // Provides breathing space after scrolling
               >
                 {/* Category Title Segment Divider */}
                 <SectionDivider title={category.name} />
 
-                {/* Grid matching exactly two columns on mobile and auto scaling on desktop */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {categoryProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
+                {/* Subcategories Subsection Loop */}
+                {subKeys.map((subName) => {
+                  const subProducts = grouped[subName]
+                  if (subProducts.length === 0) return null
+
+                  return (
+                    <div
+                      key={subName}
+                      id={`subcategory-section-${category.id}-${subName}`}
+                      style={{ 
+                        scrollMarginTop: '100px',
+                        marginBottom: '32px' 
+                      }}
+                    >
+                      {/* Elegant subcategory header */}
+                      {subName !== 'Outros' && subKeys.length > 1 && (
+                        <h3
+                          style={{
+                            fontFamily: 'var(--font-display)',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            fontStyle: 'italic',
+                            color: 'var(--bronze)',
+                            paddingBottom: '6px',
+                            marginBottom: '14px',
+                            borderBottom: '1px dashed rgba(201,168,76,0.22)',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
+                          {subName}
+                        </h3>
+                      )}
+
+                      {/* Grid matching exactly two columns on mobile and auto scaling on desktop */}
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                        {subProducts.map((product) => (
+                          <ProductCard key={product.id} product={product} />
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
               </section>
             )
           })

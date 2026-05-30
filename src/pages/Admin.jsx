@@ -405,15 +405,22 @@ export function Admin() {
                               )}
                             </td>
                             {/* Category name */}
-                            <td className="py-3 px-4 text-slate-600 font-medium">
-                              {cat ? (
-                                <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] border border-slate-150">
-                                  {cat.name}
-                                </span>
-                              ) : (
-                                <span className="text-slate-400 italic text-[10px]">Sem categoria</span>
-                              )}
-                            </td>
+                            <td className="py-3 px-4 text-slate-605 font-medium">
+                               {cat ? (
+                                 <div className="flex flex-col gap-1 items-start">
+                                   <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] border border-slate-150 font-semibold">
+                                     {cat.name}
+                                   </span>
+                                   {prod.subcategory && (
+                                     <span className="text-[10px] text-slate-400 font-medium ml-1">
+                                       ➔ {prod.subcategory}
+                                     </span>
+                                   )}
+                                 </div>
+                               ) : (
+                                 <span className="text-slate-400 italic text-[10px]">Sem categoria</span>
+                               )}
+                             </td>
                             {/* Price */}
                             <td className="py-3 px-4 text-right font-semibold text-slate-900">
                               {formatBrl(prod.price)}
