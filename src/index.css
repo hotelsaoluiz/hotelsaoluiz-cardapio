@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Additional global overrides if needed */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

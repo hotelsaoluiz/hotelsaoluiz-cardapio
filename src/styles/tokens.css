@@ -1,0 +1,63 @@
+:root {
+  /* Azuis do logo */
+  --navy-dark:   #141D55;   /* header, footer, nav de fundo */
+  --navy:        #1E2A7A;   /* cor primária — border-top cards, títulos */
+  --navy-mid:    #2A3A9E;   /* hover, badge disponível */
+  --navy-light:  #E8EBF7;   /* fundo sutil, hover de cards */
+
+  /* Dourados — ornamentos Art Déco */
+  --gold:        #C9A84C;
+  --gold-light:  #E8D48B;
+  --gold-pale:   #F5EDD0;
+
+  /* Neutros */
+  --ivory:       #F5F3EE;   /* texto sobre azul escuro */
+  --white:       #FFFFFF;   /* fundo da página */
+  --bg-card:     #FAFAF7;   /* fundo de cards */
+  --bg-surface:  #F5F3EE;   /* superfícies alternadas */
+  --bronze:      #8A8070;   /* texto secundário, badge indisponível */
+
+  /* Bordas */
+  --border-navy:       1px solid rgba(30,42,122,0.15);
+  --border-navy-hover: 1px solid rgba(30,42,122,0.4);
+  --border-gold:       1px solid rgba(201,168,76,0.35);
+  --border-gold-strong:1px solid #C9A84C;
+
+  /* Tipografia */
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-ui:      'Josefin Sans', system-ui, sans-serif;
+
+  /* Geometria Art Déco */
+  --radius-menu:  0px;   /* cardápio público: sem arredondamento */
+  --radius-admin: 8px;   /* painel admin: arredondado normal */
+}
+
+/* Base styles enforcing the typography on root elements */
+body {
+  font-family: var(--font-ui);
+  background-color: var(--white);
+  color: var(--navy-dark);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+/* Custom scrollbar matching design requirements */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--navy-light);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-light);
+}
