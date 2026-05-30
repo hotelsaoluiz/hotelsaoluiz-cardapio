@@ -3,6 +3,59 @@ import { useDropzone } from 'react-dropzone'
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 
+// Helper function to resize and crop image to exactly 800x600 pixels (4:3 ratio) via HTML5 Canvas
+const resizeAndCropImage = (file, targetWidth = 800, targetHeight = 600) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = (event) => {
+      const img = new Image()
+      img.src = event.target.result
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = targetWidth
+        canvas.height = targetHeight
+        const ctx = canvas.getContext('2d')
+
+        // Calculate aspect ratio and positioning to crop the image nicely (cover style)
+        const imgRatio = img.width / img.height
+        const targetRatio = targetWidth / targetHeight
+        let sx = 0, sy = 0, sWidth = img.width, sHeight = img.height
+
+        if (imgRatio > targetRatio) {
+          // Image is wider than 4:3
+          sWidth = img.height * targetRatio
+          sx = (img.width - sWidth) / 2
+        } else {
+          // Image is taller than 4:3
+          sHeight = img.width / targetRatio
+          sy = (img.height - sHeight) / 2
+        }
+
+        ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, targetWidth, targetHeight)
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const resizedFile = new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              })
+              resolve(resizedFile)
+            } else {
+              reject(new Error('Falha ao processar imagem.'))
+            }
+          },
+          'image/jpeg',
+          0.85 // High quality JPEG compression
+        )
+      }
+      img.onerror = () => reject(new Error('Erro ao ler a imagem.'))
+    }
+    reader.onerror = () => reject(new Error('Erro ao carregar o arquivo.'))
+  })
+}
+
 export function ImageUpload({ value, onChange, disabled = false }) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState(null)
@@ -20,19 +73,22 @@ export function ImageUpload({ value, onChange, disabled = false }) {
         throw new Error('Por favor, envie um arquivo de imagem válido (PNG, JPG, WEBP).')
       }
 
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        throw new Error('A imagem deve ter no máximo 5MB.')
+      // Validate file size (max 500KB)
+      if (file.size > 500 * 1024) {
+        throw new Error('A imagem deve ter no máximo 500KB.')
       }
 
-      const fileExt = file.name.split('.').pop()
+      // Automatically resize and crop image to exactly 800x600 pixels (4:3 ratio) for layout consistency
+      const processedFile = await resizeAndCropImage(file, 800, 600)
+
+      const fileExt = 'jpg' // Output is always compressed JPEG
       const fileName = `${Math.random().toString(36).substring(2, 15)}-${Date.now()}.${fileExt}`
       const filePath = `products/${fileName}`
 
       // Upload file to Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from('product-images')
-        .upload(filePath, file, {
+        .upload(filePath, processedFile, {
           cacheControl: '3600',
           upsert: false,
         })
