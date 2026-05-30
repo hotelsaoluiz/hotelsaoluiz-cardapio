@@ -918,6 +918,26 @@ export function Admin() {
                       </div>
                     </div>
 
+                    {/* Progress Bar showing percentage utilized of 1GB limit */}
+                    <div className="space-y-1.5 pt-2">
+                      <div className="flex justify-between text-xs font-semibold text-slate-650">
+                        <span>Capacidade de Armazenamento:</span>
+                        <span className="font-bold text-navy-dark">
+                          {((totalStorageSize / 1073741824) * 100).toFixed(3)}% utilizado
+                        </span>
+                      </div>
+                      <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200/60 p-0.5">
+                        <div 
+                          className="h-full bg-navy rounded-full transition-all duration-500" 
+                          style={{ width: `${Math.min(100, Math.max(0.3, (totalStorageSize / 1073741824) * 100))}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-[9px] font-bold text-slate-450 uppercase tracking-wider">
+                        <span>0%</span>
+                        <span>Limite Recomendado: 1.0 GB</span>
+                      </div>
+                    </div>
+
                     <div className="bg-slate-50/50 rounded p-4 text-[11px] text-slate-650 leading-relaxed border border-slate-150">
                       <p>
                         ✓ <strong>Otimização Automática Ativa</strong>: Sempre que você insere ou substitui uma imagem no cardápio, 
