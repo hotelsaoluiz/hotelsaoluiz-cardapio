@@ -208,6 +208,20 @@ export function Menu() {
           © {new Date().getFullYear()} {import.meta.env.VITE_HOTEL_NAME || 'Hotel São Luiz'}. Todos os direitos reservados.
         </p>
 
+        <p
+          style={{
+            fontFamily: 'var(--font-ui)',
+            fontSize: '7px',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            color: 'var(--gold-pale)',
+            opacity: 0.65,
+            margin: '6px 0 0 0',
+          }}
+        >
+          Desenvolvido por IP6 Networks
+        </p>
+
         <Link
           to="/login"
           style={{

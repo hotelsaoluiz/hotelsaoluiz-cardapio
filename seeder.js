@@ -1,0 +1,353 @@
+const fs = require('fs')
+const path = require('path')
+const { createClient } = require('@supabase/supabase-js')
+
+// 1. Helper to parse .env file manually (zero external dependencies)
+function loadEnv() {
+  const envPath = path.join(__dirname, '.env')
+  if (!fs.existsSync(envPath)) {
+    console.error('Erro: Arquivo .env não encontrado na raiz do projeto! Crie-o primeiro.')
+    process.exit(1)
+  }
+  
+  const envContent = fs.readFileSync(envPath, 'utf8')
+  const env = {}
+  envContent.split(/\r?\n/).forEach((line) => {
+    const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/)
+    if (match) {
+      let value = match[2] ? match[2].trim() : ''
+      if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1)
+      if (value.startsWith("'") && value.endsWith("'")) value = value.slice(1, -1)
+      env[match[1]] = value;
+    }
+  })
+  return env
+}
+
+const env = loadEnv()
+const supabaseUrl = env.VITE_SUPABASE_URL
+const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Erro: VITE_SUPABASE_URL ou VITE_SUPABASE_ANON_KEY não definidos no seu arquivo .env!')
+  process.exit(1)
+}
+
+console.log('Iniciando conexão com o Supabase:', supabaseUrl)
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+// 2. Full Parsed Menu Data Structure
+const categoriesData = [
+  { name: 'Bebidas', order: 1 },
+  { name: 'Uísque', order: 2 },
+  { name: 'Espumante', order: 3 },
+  { name: 'Carta de Vinhos', order: 4 },
+  { name: 'Entradas', order: 5 },
+  { name: 'Porções', order: 6 },
+  { name: 'Lanches', order: 7 },
+  { name: 'Sopas', order: 8 },
+  { name: 'Saladas', order: 9 },
+  { name: 'Omeletes', order: 10 },
+  { name: 'Risotos', order: 11 },
+  { name: 'Peixes e Frutos do Mar', order: 12 },
+  { name: 'Carnes', order: 13 },
+  { name: 'Massas', order: 14 },
+  { name: 'Frango', order: 15 },
+  { name: 'Sobremesas', order: 16 }
+]
+
+const productsData = {
+  'Bebidas': [
+    { name: 'Água mineral (com ou sem gás)', price: 5.00 },
+    { name: 'Refrigerante (lata 350ml)', price: 7.00 },
+    { name: 'Cerveja (Budwaiser, Spaten e Original 600ml)', price: 19.00 },
+    { name: 'Cerveja (Skol 600ml)', price: 17.00 },
+    { name: 'Cerveja preta (Brahma Malzebier lata 350ml)', price: 10.00 },
+    { name: 'Cerveja Heineken Long Neck', price: 14.00 },
+    { name: 'H2O (limão copo 400ml)', price: 8.00 },
+    { name: 'Suco Natural (laranja ou abacaxi copo 400ml)', price: 12.00 },
+    { name: 'Suco de Limão (copo 400ml)', price: 8.00 },
+    { name: 'Caipira Morango', price: 26.00 },
+    { name: 'Caipira Vodka', price: 25.00 },
+    { name: 'Caipira Velho Barreiro', price: 20.00 },
+    { name: 'Caipira Absolute', price: 30.00 },
+    { name: 'Martini', price: 10.00 },
+    { name: 'Campari', price: 10.00 },
+    { name: 'Rum', price: 10.00 },
+    { name: 'Vodca', price: 10.00 },
+    { name: 'Gin', price: 10.00 },
+    { name: 'Underberg', price: 10.00 },
+    { name: 'Aperol Spritz (Aperol c/ espumante)', price: 35.00 }
+  ],
+  'Uísque': [
+    { name: 'Chivas (12 anos) - Importado', price: 20.00 },
+    { name: 'Logan (12 anos) - Importado', price: 18.00 },
+    { name: 'Johnnie Walker - Importado', price: 19.00 },
+    { name: 'Old Eight - Nacional', price: 10.00 }
+  ],
+  'Espumante': [
+    { name: 'Freixenet (semi sec)', price: 109.00 },
+    { name: 'Freixenet Mia', price: 89.00 },
+    { name: 'Freixenet Gordon negro Brut', price: 109.00 },
+    { name: 'Chandon Extra Brut', price: 130.00 }
+  ],
+  'Carta de Vinhos': [
+    { name: '8 KM Cabernet Sauvignon - Importado', price: 58.00 },
+    { name: 'Casillero Del Diablo Cabernet - Importado', price: 109.00 },
+    { name: 'Casillero Del Diablo Sauvignon Blanc - Importado', price: 109.00 },
+    { name: 'Casillero Del Diablo Carmenere - Importado', price: 109.00 },
+    { name: 'Casillero Del Diablo Chardonnay - Importado', price: 109.00 },
+    { name: 'Gato Negro Cabernet Sauvignon - Importado', price: 89.00 },
+    { name: 'Gato Negro Merlot - Importado', price: 89.00 },
+    { name: 'Reservado Concha Y Toro Cabernet Sauvignon - Importado', price: 89.00 },
+    { name: 'Reservado Concha Y Toro Sauvignon Blanc - Importado', price: 89.00 },
+    { name: 'Don Laurindo Cabernet Sauvignon - Nacional', price: 104.00 },
+    { name: 'Don Laurindo Merlot - Nacional', price: 118.00 },
+    { name: 'Don Laurindo Tannat - Nacional', price: 120.00 },
+    { name: 'Don Laurindo Malbec - Nacional', price: 115.00 },
+    { name: 'Don Pedrito Cabernet Sauvignon - Nacional', price: 95.00 },
+    { name: 'Don Pedrito Malbec - Nacional', price: 99.00 },
+    { name: 'Don Pedrito Merlot - Nacional', price: 99.00 },
+    { name: 'Taça de Vinho Tinto Seco Colonial (300ml)', price: 18.00 },
+    { name: 'Taça de Vinho Tinto Suave Colonial (300ml)', price: 18.00 },
+    { name: 'Rutini Malbec - Argentino', price: 279.00 },
+    { name: 'DV Catena Malbec - Argentino', price: 199.00 },
+    { name: 'DV Catena Cabernet Malbec - Argentino', price: 179.00 },
+    { name: 'Angelica Zapata Cabernet - Argentino', price: 269.00 },
+    { name: 'Angelica Zapata Malbec - Argentino', price: 279.00 },
+    { name: 'Cordero com Piel de Lobo Malbec - Argentino', price: 79.00 },
+    { name: 'Cordero del Lobo Chardonnay - Argentino', price: 79.00 },
+    { name: 'Cordero Rose Malbec - Argentino', price: 79.00 },
+    { name: 'Perro Callejero Malbec - Argentino', price: 109.00 },
+    { name: 'La Linda Chardonnay - Argentino', price: 109.00 },
+    { name: 'La Linda Rose Malbec - Argentino', price: 109.00 },
+    { name: 'Latitude 33 Malbec - Argentino', price: 109.00 }
+  ],
+  'Entradas': [
+    { name: 'Pastéis Presunto e Queijo (6 unidades)', price: 9.00 },
+    { name: 'Pastéis carne (6 unidades)', price: 16.00 },
+    { name: 'Pastéis camarão (6 unidades)', price: 22.00 },
+    { name: 'Bolinho de Peixe (5 unidades)', price: 9.50 },
+    { name: 'Bolinho de Bacalhau (6 unidades)', price: 32.00 },
+    { name: 'Picadinho de Filé', price: 45.00 },
+    { name: 'Iscas de Frango a Milanesa', price: 30.00, description: '250g de iscas de frango a milanesa' },
+    { name: 'Camarão a Milanesa', price: 89.00 },
+    { name: 'Iscas de Peixe a Milanesa', price: 50.00, description: '350g de iscas de peixe a milanesa' },
+    { name: 'Tilápia a Milanesa', price: 40.00, description: '350g de iscas de peixe a milanesa' },
+    { name: 'Tábua de Frios', price: 50.00, description: 'Queijo, presunto, pepino, azeitona e salame' },
+    { name: 'Batata Frita', price: 30.00, description: '300g de batata palito' },
+    { name: 'Batata Frita c/ cheddar e bacon', price: 55.00, description: 'Batata palito, bacon e queijo cheddar' }
+  ],
+  'Porções': [
+    { name: 'Arroz', price: 13.00 },
+    { name: 'Feijão', price: 13.00 },
+    { name: 'Ovo', price: 4.00 },
+    { name: 'Batata frita (adicional)', price: 5.00 }
+  ],
+  'Lanches': [
+    { name: 'Bauru São Luiz', price: 44.00, description: 'Iscas de filé (200g), queijo, presunto, alface, tomate, milho, ervilha, Fritas e ovo' },
+    { name: 'Xis Bacon', price: 48.00, description: 'Bacon, presunto, queijo, milho, ervilha, tomate, alface, maionese, ovo' },
+    { name: 'Torrada Simples', price: 16.00, description: 'Presunto e queijo' },
+    { name: 'Torrada completa', price: 24.00, description: 'Presunto, queijo, tomate, alface, ovo' },
+    { name: 'Pizza Família', price: 70.00, description: 'Frango com requeijão, mussarela, calabresa, lombo com requeijão, bacon e cheddar' },
+    { name: 'Pizza Média', price: 58.00, description: 'Frango com requeijão, mussarela, calabresa, lombo com requeijão, bacon e cheddar' }
+  ],
+  'Sopas': [
+    { name: 'Canja * Servido na sopeira, p/1 pessoa', price: 27.00, description: 'Arroz, frango, cenoura e batata' },
+    { name: 'Sopa de Capeletti * Servido na sopeira, p/1 pessoa', price: 33.00, description: 'Carne ou frango' },
+    { name: 'Sopa de Capeletti * Servido na sopeira, p/2 pessoas', price: 60.00, description: 'Carne ou frango' }
+  ],
+  'Saladas': [
+    { name: 'Mix de folhas * Empratado, porção p/1 pessoa', price: 19.00, description: 'Alface, rúcula, tomate e cebola roxa' },
+    { name: 'Salada Caesar * Empratado, porção p/1 pessoa', price: 33.00, description: 'Frango grelhado, alface americana, uva passa, molho e croutons' },
+    { name: 'Salpicão * Empratado, porção p/1 pessoa', price: 22.00, description: 'Frango desfiado, maionese, cenoura ralada, pimentões picados, batata palha, presunto e queijo' }
+  ],
+  'Omeletes': [
+    { name: 'Omelete de legumes', price: 27.00 },
+    { name: 'Omelete de presunto e queijo', price: 31.00 },
+    { name: 'Omelete de presunto, queijo e salaminho', price: 35.00 }
+  ],
+  'Risotos': [
+    { name: 'Risoto de Camarão * Empratado, porção p/1 pessoa', price: 62.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, parmesão, vinho branco e camarão grelhado' },
+    { name: 'Risoto ao Funghi * Empratado, porção p/1 pessoa', price: 61.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, parmesão, vinho branco, Funghi e medalhões de filé grelhado' },
+    { name: 'Risoto de abóbora cabotiá * Empratado, porção p/1 pessoa', price: 61.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, abóbora cabotiá, parmesão, vinho branco e medalhões de filé grelhado' },
+    { name: 'Risoto de salmão e limão siciliano * Empratado, porção p/1 pessoa', price: 69.00, description: 'Arroz arbóreo, raspas de limão siciliano, salmão grelhado, cebola, alho poro, manteiga, palmito, parmesão, vinho branco' },
+    { name: 'Risoto de rúcula c/ salmão * Empratado, porção p/1 pessoa', price: 69.00, description: 'Arroz arbóreo, rúcula, salmão grelhado, tomate seco, cebola, alho poro, manteiga, palmito, parmesão, vinho branco' },
+    { name: 'Risoto de gorgonzola c/ filé * Empratado, porção p/1 pessoa', price: 64.00, description: 'Arroz arbóreo, cebola, alho poro, gorgonzola, manteiga, parmesão, vinho branco e filé grelhado' }
+  ],
+  'Peixes e Frutos do Mar': [
+    { name: 'Salmão ao molho mostarda', price: 104.00, description: 'Salmão grelhado no azeite de oliva, acompanhado de molho de mostarda, mel e nata; batata elegante (com molho branco e queijo ralado gratinado) e arroz' },
+    { name: 'Salmão ao molho maracujá', price: 92.00, description: 'Salmão grelhado com molho de maracujá, arroz e gratinado de batatas' },
+    { name: 'Salmão ao molho alcaparras', price: 116.00, description: 'Salmão grelhado, molho com alcaparras (molho branco com alcaparras), champignon, batata souté e arroz' },
+    { name: 'Tilápia a São Luiz', price: 72.00, description: 'Filé de tilápia a milanesa, cenoura, cebola, brócolis grelhados e arroz' },
+    { name: 'Tilápia a siciliana', price: 65.00, description: 'Filé de tilápia grelhado crisp de cebola (cebola meia lua frita), arroz e batata chips' },
+    { name: 'Traíra a São Luiz', price: 87.00, description: 'Filé de traíra a milanesa acompanhada de legumes cozidos, ovos e arroz.' },
+    { name: 'Traíra a siciliana', price: 76.00, description: 'Filé de traíra frita, crisp de cebola (cebola meia lua frita), batata chips, molho com limão e arroz' },
+    { name: 'Traíra ao molho escabeche', price: 73.00, description: 'Filé de traíra frita, arroz e molho ao escabeche (tomate e cebola)' },
+    { name: 'Traíra ao molho de camarão', price: 113.00, description: 'Filé de traíra frita, de molho de camarão e arroz' }
+  ],
+  'Carnes': [
+    { name: 'Filé Acebolado', price: 65.00, description: 'Medalhões de filé (200g) com cebola grelhada, arroz, batata frita mix de folhas e ovo' },
+    { name: 'Filé Grelhado', price: 58.00, description: 'Arroz, filé grelhado (200g), alface e tomate' },
+    { name: 'Filé a Milanesa', price: 68.00, description: 'Filé a milanesa (200g), arroz, batata frita, mix de folhas e ovo' },
+    { name: 'Filé a Parmegiana', price: 87.00, description: 'Filé empanado (200g), presunto, molho de tomate, queijo gratinado, arroz, batata frita' },
+    { name: 'Tornedos de Filé', price: 85.00, description: 'Medalhões de filé (200g) envolto com tiras de bacon ao molho de vinho, arroz, batata frita' },
+    { name: 'Medalhões de Filé', price: 77.00, description: 'Medalhões de filé (200g) envolto com tiras de bacon, arroz, batata frita' },
+    { name: 'A La Minuta de Filé', price: 78.00, description: 'Filé grelhado (200g), arroz, feijão, batata frita, mix de folhas e ovo' },
+    { name: 'Estrogonof de Filé', price: 81.00, description: 'Iscas de filé grelhado (250g), molho de strogonof, arroz e batata palha' },
+    { name: 'Carreteiro de Charque', price: 55.00, description: 'Charque receita tradicional de carreteiro de charque. Servido na panela de ferro.' },
+    { name: 'Carreteiro de Filé', price: 58.00, description: 'Iscas de filé, cebola, tomate, molho de tomate e arroz. Servido na panela de ferro.' }
+  ],
+  'Massas': [
+    { name: 'Espaguete á bolonhesa', price: 57.00, description: 'Espaguete artesanal, molho vermelho, queijo e iscas de filé' },
+    { name: 'Espaguete á Carbonara', price: 62.00, description: 'Espaguete artesanal, bacon, gemas, molho branco e parmesão' },
+    { name: 'Espaguete á São Luiz', price: 68.00, description: 'Espaguete artesanal, molho branco, com iscas de filé e champignon' },
+    { name: 'Espaguete ao funghi', price: 85.00, description: 'Espaguete artesanal, molho branco, funghi grelhado e iscas de filé' },
+    { name: 'Espaguete camarão', price: 92.00, description: 'Espaguete artesanal, molho branco, camarão grelhado' },
+    { name: 'Fettuccine São Luiz', price: 85.00, description: 'Fettuccine artesanal, rúcula, tomate seco, escalopes de filé e molho 4 queijos.' },
+    { name: 'Nhoque á bolonhesa', price: 65.00, description: 'Nhoque de batata, molho de tomate e carne' },
+    { name: 'Sorrentino de presunto e queijo', price: 65.00, description: 'Sorrentino de presunto e queijo e molho Rosse' },
+    { name: 'Sorrentino de presunto e queijo á bolonhesa', price: 70.00, description: 'Sorrentino de presunto e queijo, molho vermelho e iscas de filé' },
+    { name: 'Ravióli de Espinafre e Ricota', price: 70.00, description: 'Ravióli de espinafre e ricota flambado na manteiga com tempero verde' },
+    { name: 'Ravióli de Espinafre e Ricota á bolonhesa', price: 75.00, description: 'Ravióli de espinafre e ricota, molho vermelho e iscas de filé' }
+  ],
+  'Frango': [
+    { name: 'Frango Grelhado', price: 45.00, description: 'Frango grelhado (200g), arroz branco, mix de folhas' },
+    { name: 'Frango a parmegiana', price: 69.00, description: 'Filé de frango (200g) empanado e frito, arroz, batata frita e mix de folhas' },
+    { name: 'Frango a milanesa', price: 48.00, description: 'Filé de frango (200g), arroz branco, alface e tomate' },
+    { name: 'A La minuta de Frango', price: 60.00, description: 'Filé de frango grelhado (200g), arroz, batata frita, feijão, mix de folhas e ovo' },
+    { name: 'Strogonof de Frango', price: 62.00, description: 'Iscas de frango (200g), arroz, batata palha e molho strogonof' }
+  ],
+  'Sobremesas': [
+    { name: 'Pudim (leite, leite condensado e ovos)', price: 8.00 },
+    { name: 'Petit gâteau c/ sorvete de creme', price: 25.00 }
+  ]
+}
+
+// 3. Helper to generate slug from name
+const slugify = (text) => {
+  return text
+    .toString()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+}
+
+async function run() {
+  try {
+    let isAuthenticated = false
+
+    // Check if key is secret/service_role (bypasses RLS)
+    if (supabaseAnonKey.startsWith('sb_secret_')) {
+      console.log('Chave do tipo SECRET detectada. A inserção ignorará as políticas RLS automaticamente.')
+      isAuthenticated = true
+    } else {
+      console.log('Chave do tipo PUBLISHABLE detectada. Tentando autenticação como administrador...')
+      
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: 'administrador@hotelsaoluiz.com',
+        password: 'hslcardapio'
+      })
+
+      if (authError) {
+        console.warn('Alerta: Não foi possível autenticar localmente:', authError.message)
+        console.log('Dica: Certifique-se de criar o usuário "administrador@hotelsaoluiz.com" com a senha "hslcardapio" no painel Authentication do Supabase.')
+        console.log('Continuando tentativa direta no banco de dados (pode falhar se RLS estiver ativo)...')
+      } else {
+        console.log('Autenticação de administrador realizada com sucesso! Token de sessão obtido.')
+        isAuthenticated = true
+      }
+    }
+
+    console.log('\n--- 1. CADASTRANDO CATEGORIAS ---')
+    const categoryMap = {}
+
+    for (const cat of categoriesData) {
+      const slug = slugify(cat.name)
+      
+      // Check if category already exists to avoid duplicates
+      const { data: existing, error: findError } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('slug', slug)
+        .maybeSingle()
+
+      if (existing) {
+        console.log(`[Categoria] "${cat.name}" já cadastrada. Pulando...`)
+        categoryMap[cat.name] = existing.id
+      } else {
+        const { data: created, error: createError } = await supabase
+          .from('categories')
+          .insert([{ name: cat.name, slug, display_order: cat.order }])
+          .select()
+          .single()
+
+        if (createError) {
+          throw new Error(`Erro ao criar categoria "${cat.name}": ${createError.message}`)
+        }
+        console.log(`[Categoria] "${cat.name}" criada com sucesso!`)
+        categoryMap[cat.name] = created.id
+      }
+    }
+
+    console.log('\n--- 2. CADASTRANDO PRODUTOS ---')
+    let totalInserted = 0
+
+    for (const categoryName of Object.keys(productsData)) {
+      const categoryId = categoryMap[categoryName]
+      if (!categoryId) {
+        console.warn(`Alerta: Categoria "${categoryName}" não encontrada no mapeamento. Pulando pratos...`)
+        continue
+      }
+
+      const productsList = productsData[categoryName]
+      console.log(`\nInserindo pratos para Categoria "${categoryName}" (total: ${productsList.length})...`)
+
+      for (const prod of productsList) {
+        // Check if product already exists to avoid duplication
+        const { data: existing, error: findError } = await supabase
+          .from('products')
+          .select('*')
+          .eq('name', prod.name)
+          .eq('category_id', categoryId)
+          .maybeSingle()
+
+        if (existing) {
+          console.log(`  [Produto] "${prod.name}" já cadastrado. Pulando...`)
+          continue
+        }
+
+        const { error: insertError } = await supabase
+          .from('products')
+          .insert([{
+            category_id: categoryId,
+            name: prod.name,
+            price: prod.price,
+            description: prod.description || '',
+            available: true,
+            display_order: 0
+          }])
+
+        if (insertError) {
+          console.error(`  [Erro] Falha ao cadastrar "${prod.name}":`, insertError.message)
+        } else {
+          console.log(`  [Produto] "${prod.name}" cadastrado - R$ ${prod.price.toFixed(2)}`)
+          totalInserted++
+        }
+      }
+    }
+
+    console.log(`\n🎉 SEEDING CONCLUÍDO COM SUCESSO!`)
+    console.log(`Total de novas categorias inseridas/verificadas: ${categoriesData.length}`)
+    console.log(`Total de novos produtos inseridos com sucesso: ${totalInserted}`)
+
+  } catch (err) {
+    console.error('\n❌ Erro fatal durante a carga de dados:', err.message)
+  }
+}
+
+run()
