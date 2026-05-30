@@ -7,7 +7,7 @@ export function SubcategoryNav({ subcategories, activeSubcategory, onSelectSubca
     <div
       className="subcategory-nav-scroll"
       style={{
-        backgroundColor: 'var(--navy-light)',
+        backgroundColor: 'var(--navy-dark)',
         borderBottom: '1px solid rgba(201,168,76,0.15)',
         display: 'flex',
         overflowX: 'auto',
@@ -31,15 +31,15 @@ export function SubcategoryNav({ subcategories, activeSubcategory, onSelectSubca
         onClick={() => onSelectSubcategory('')}
         style={{
           fontFamily: 'var(--font-ui)',
-          fontSize: '9px',
+          fontSize: '10px',
           fontWeight: activeSubcategory === '' ? '600' : '400',
           letterSpacing: '0.12em',
           textTransform: 'uppercase',
           padding: '6px 12px',
-          border: activeSubcategory === '' ? '1px solid var(--gold)' : '1px solid rgba(255, 255, 255, 0.2)',
+          border: activeSubcategory === '' ? '1px solid var(--gold)' : '1px solid rgba(245, 243, 238, 0.25)',
           borderRadius: '0px', // Strict border-radius 0
           backgroundColor: activeSubcategory === '' ? 'var(--gold)' : 'transparent',
-          color: activeSubcategory === '' ? 'var(--navy-dark)' : 'rgba(255, 255, 255, 0.75)',
+          color: activeSubcategory === '' ? 'var(--navy-dark)' : 'var(--ivory)',
           cursor: 'pointer',
           transition: 'all 200ms ease',
           outline: 'none',
@@ -57,15 +57,15 @@ export function SubcategoryNav({ subcategories, activeSubcategory, onSelectSubca
             onClick={() => onSelectSubcategory(sub)}
             style={{
               fontFamily: 'var(--font-ui)',
-              fontSize: '9px',
+              fontSize: '10px',
               fontWeight: isActive ? '600' : '400',
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
               padding: '6px 12px',
-              border: isActive ? '1px solid var(--gold)' : '1px solid rgba(255, 255, 255, 0.2)',
+              border: isActive ? '1px solid var(--gold)' : '1px solid rgba(245, 243, 238, 0.25)',
               borderRadius: '0px', // Strict border-radius 0
               backgroundColor: isActive ? 'var(--gold)' : 'transparent',
-              color: isActive ? 'var(--navy-dark)' : 'rgba(255, 255, 255, 0.75)',
+              color: isActive ? 'var(--navy-dark)' : 'var(--ivory)',
               cursor: 'pointer',
               transition: 'all 200ms ease',
               outline: 'none',
