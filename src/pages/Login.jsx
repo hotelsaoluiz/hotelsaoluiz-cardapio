@@ -27,11 +27,17 @@ export function Login() {
       return
     }
 
+    // Automatically append default domain if user typed a simple username
+    let finalEmail = email.trim()
+    if (!finalEmail.includes('@')) {
+      finalEmail = `${finalEmail}@hotelsaoluiz.com`
+    }
+
     setSubmitting(true)
     setError(null)
 
     try {
-      await signIn(email, password)
+      await signIn(finalEmail, password)
       navigate('/admin', { replace: true })
     } catch (err) {
       console.error('Erro de login:', err)
@@ -72,17 +78,17 @@ export function Login() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-              E-mail Administrativo
+              Usuário ou E-mail
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <input
-                type="email"
+                type="text"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={submitting || authLoading}
-                placeholder="admin@hotelsaoluiz.com"
+                placeholder="Ex: administrador"
                 className="w-full pl-10 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-admin text-white text-sm focus:outline-none focus:border-gold transition-colors placeholder:text-slate-600 disabled:opacity-50"
               />
             </div>
