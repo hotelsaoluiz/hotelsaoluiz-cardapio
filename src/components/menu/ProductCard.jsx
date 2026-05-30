@@ -71,7 +71,7 @@ export function ProductCard({ product }) {
             justifyContent: 'center',
             color: 'var(--bronze)',
             fontFamily: 'var(--font-ui)',
-            fontSize: '9px',
+            fontSize: '10px',
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
             borderBottom: '1px solid rgba(201,168,76,0.1)',
@@ -81,10 +81,10 @@ export function ProductCard({ product }) {
         </div>
       )}
 
-      {/* Card Content Area */}
+      {/* Card Content Area - optimized padding for mobile side-by-side (12px instead of 16px) */}
       <div
         style={{
-          padding: '16px',
+          padding: '12px',
           display: 'flex',
           flexDirection: 'column',
           flexGrow: 1,
@@ -96,37 +96,24 @@ export function ProductCard({ product }) {
           <div
             style={{
               display: 'flex',
-              justifyContent: 'space-between',
+              flexDirection: 'column', // Stack vertically on small column views to maximize title space
               alignItems: 'flex-start',
-              gap: '10px',
+              gap: '6px',
               marginBottom: '8px',
             }}
           >
-            <h4
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '17px',
-                fontWeight: '400',
-                color: 'var(--navy-dark)',
-                margin: 0,
-                lineHeight: '1.2',
-              }}
-            >
-              {name}
-            </h4>
-
-            {/* Availability Badges */}
+            {/* Availability Badges - scaled to 10px bold */}
             {available ? (
               <span
                 style={{
                   fontFamily: 'var(--font-ui)',
-                  fontSize: '8px',
-                  fontWeight: '600',
-                  letterSpacing: '0.15em',
+                  fontSize: '10px',
+                  fontWeight: '700',
+                  letterSpacing: '0.1em',
                   textTransform: 'uppercase',
                   color: 'var(--navy-mid)',
-                  padding: '3px 8px',
-                  border: '1px solid rgba(42,58,158,0.3)',
+                  padding: '2px 6px',
+                  border: '1px solid rgba(42,58,158,0.35)',
                   whiteSpace: 'nowrap',
                   flexShrink: 0,
                 }}
@@ -137,13 +124,13 @@ export function ProductCard({ product }) {
               <span
                 style={{
                   fontFamily: 'var(--font-ui)',
-                  fontSize: '8px',
-                  fontWeight: '400',
-                  letterSpacing: '0.15em',
+                  fontSize: '10px',
+                  fontWeight: '700',
+                  letterSpacing: '0.1em',
                   textTransform: 'uppercase',
                   color: 'var(--bronze)',
-                  padding: '3px 8px',
-                  border: '1px solid rgba(138,128,112,0.4)',
+                  padding: '2px 6px',
+                  border: '1px solid rgba(138,128,112,0.45)',
                   whiteSpace: 'nowrap',
                   flexShrink: 0,
                 }}
@@ -151,18 +138,31 @@ export function ProductCard({ product }) {
                 Esgotado
               </span>
             )}
+
+            <h4
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '20px', // Enlarged from 17px for excellent senior legibility
+                fontWeight: '600', // Made thicker/bolder
+                color: 'var(--navy-dark)',
+                margin: 0,
+                lineHeight: '1.25',
+              }}
+            >
+              {name}
+            </h4>
           </div>
 
-          {/* Description */}
+          {/* Description - scaled to 12px for high readability */}
           {description && (
             <p
               style={{
                 fontFamily: 'var(--font-ui)',
-                fontSize: '10px',
-                letterSpacing: '0.07em',
-                lineHeight: '1.65',
+                fontSize: '12px', // Enlarged from 10px
+                letterSpacing: '0.04em',
+                lineHeight: '1.5',
                 color: 'var(--bronze)',
-                margin: '0 0 16px 0',
+                margin: '0 0 12px 0',
               }}
             >
               {description}
@@ -170,13 +170,13 @@ export function ProductCard({ product }) {
           )}
         </div>
 
-        {/* Price Display */}
+        {/* Price Display - scaled to 21px bold */}
         <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline' }}>
           <span
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '19px',
-              fontWeight: '400',
+              fontSize: '21px', // Enlarged from 19px
+              fontWeight: '600', // Made thicker/bolder
               color: 'var(--navy)',
             }}
           >

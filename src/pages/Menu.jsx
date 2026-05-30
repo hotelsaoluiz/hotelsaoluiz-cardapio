@@ -48,14 +48,7 @@ export function Menu() {
 
   // Pure Skeleton Loader conforming to requirements
   const SkeletonLoader = () => (
-    <div 
-      style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', 
-        gap: '12px',
-        width: '100%'
-      }}
-    >
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 w-full">
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
@@ -167,14 +160,8 @@ export function Menu() {
                 {/* Category Title Segment Divider */}
                 <SectionDivider title={category.name} />
 
-                {/* Grid matching repeat(auto-fit, minmax(260px, 1fr)) and 12px gap */}
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                    gap: '12px',
-                  }}
-                >
+                {/* Grid matching exactly two columns on mobile and auto scaling on desktop */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {categoryProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
