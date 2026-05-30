@@ -21,7 +21,9 @@ import {
   EyeOff, 
   Loader2,
   ListOrdered,
-  Users
+  Users,
+  Database,
+  HardDrive
 } from 'lucide-react'
 
 // Helper to generate slug from name
@@ -70,12 +72,99 @@ export function Admin() {
   const [userCreationMessage, setUserCreationMessage] = useState(null)
   const [userCreationError, setUserCreationError] = useState(null)
 
+  // Database & Storage Size Stats States
+  const [storageFiles, setStorageFiles] = useState([])
+  const [totalStorageSize, setTotalStorageSize] = useState(0)
+  const [orphanedFiles, setOrphanedFiles] = useState([])
+  const [isStorageLoading, setIsStorageLoading] = useState(false)
+  const [isCleaningStorage, setIsCleaningStorage] = useState(false)
+  const [dbSizeExact, setDbSizeExact] = useState(null)
+  const [showSqlInstructions, setShowSqlInstructions] = useState(false)
+
+  const fetchStorageStats = async () => {
+    setIsStorageLoading(true)
+    try {
+      // 1. Try to get exact DB size via RPC if it exists
+      try {
+        const { data, error } = await supabase.rpc('get_db_size')
+        if (!error && data) {
+          setDbSizeExact(data.database_size_bytes || null)
+        } else {
+          setDbSizeExact(null)
+        }
+      } catch (err) {
+        setDbSizeExact(null)
+      }
+
+      // 2. Fetch storage files in 'products' directory
+      const { data: files, error: storageError } = await supabase.storage
+        .from('product-images')
+        .list('products', { limit: 1000 })
+
+      if (storageError) throw storageError
+
+      if (files) {
+        setStorageFiles(files)
+        const total = files.reduce((acc, f) => acc + (f.metadata?.size || f.size || 0), 0)
+        setTotalStorageSize(total)
+
+        // Find orphaned files (not referenced by any product image_url)
+        const productImages = products
+          .map((p) => p.image_url)
+          .filter(Boolean)
+
+        const orphaned = files.filter((f) => {
+          const fileFullPath = `products/${f.name}`
+          return !productImages.some((url) => url.includes(fileFullPath))
+        })
+        setOrphanedFiles(orphaned)
+      }
+    } catch (err) {
+      console.error('Erro ao buscar estatísticas de armazenamento:', err)
+    } finally {
+      setIsStorageLoading(false)
+    }
+  }
+
+  const handleCleanOrphanedFiles = async () => {
+    if (orphanedFiles.length === 0) return
+    setIsCleaningStorage(true)
+    try {
+      const pathsToDelete = orphanedFiles.map((f) => `products/${f.name}`)
+      const { error } = await supabase.storage.from('product-images').remove(pathsToDelete)
+      if (error) throw error
+      alert(`${orphanedFiles.length} imagens órfãs foram excluídas com sucesso para liberar espaço!`)
+      await fetchStorageStats()
+    } catch (err) {
+      alert('Erro ao excluir imagens órfãs: ' + err.message)
+    } finally {
+      setIsCleaningStorage(false)
+    }
+  }
+
+  React.useEffect(() => {
+    if (activeTab === 'storage') {
+      fetchStorageStats()
+    }
+  }, [activeTab, products])
+
   // Handle Product Create/Update Form Submission
   const handleProductSubmit = async (formData) => {
     setIsProductSaving(true)
     try {
       if (editingProduct) {
-        // Edit flow
+        // Edit flow - if image changed, delete old image from storage
+        if (editingProduct.image_url && editingProduct.image_url !== formData.image_url) {
+          try {
+            const parts = editingProduct.image_url.split('/product-images/')
+            if (parts.length > 1) {
+              const filename = parts[1]
+              await supabase.storage.from('product-images').remove([filename])
+            }
+          } catch (storageErr) {
+            console.error('Erro ao deletar imagem antiga do storage:', storageErr)
+          }
+        }
         await updateProduct({ id: editingProduct.id, ...formData })
       } else {
         // Create flow
@@ -104,6 +193,18 @@ export function Admin() {
     if (!deletingProduct) return
     setIsProductDeleting(true)
     try {
+      // Delete associated image from storage if it exists
+      if (deletingProduct.image_url) {
+        try {
+          const parts = deletingProduct.image_url.split('/product-images/')
+          if (parts.length > 1) {
+            const filename = parts[1]
+            await supabase.storage.from('product-images').remove([filename])
+          }
+        } catch (storageErr) {
+          console.error('Erro ao deletar imagem do storage:', storageErr)
+        }
+      }
       await deleteProduct(deletingProduct.id)
       setDeletingProduct(null)
     } catch (err) {
@@ -326,6 +427,15 @@ export function Admin() {
           >
             <Users className="w-4 h-4" />
             Administradores
+          </button>
+          <button
+            onClick={() => setActiveTab('storage')}
+            className={`w-full text-left px-4 py-3 rounded-admin text-xs uppercase tracking-widest font-semibold flex items-center gap-3 transition-colors ${
+              activeTab === 'storage' ? 'bg-navy text-white' : 'bg-white text-slate-650 hover:bg-slate-100 border border-slate-200'
+            }`}
+          >
+            <Database className="w-4 h-4" />
+            Banco & Mídia
           </button>
         </aside>
 
@@ -746,19 +856,231 @@ export function Admin() {
                   )}
                 </button>
               </form>
+            </div>
+          )}
 
-              <div className="mt-8 bg-blue-50/50 border border-blue-200/50 rounded-admin p-4 text-[11px] text-slate-650 leading-relaxed space-y-2">
-                <div className="font-bold text-slate-800 uppercase tracking-wider text-[10px]">ℹ️ Informações de Segurança & Custos:</div>
-                <p>
-                  1. **100% Gratuito:** O sistema de autenticação é provido gratuitamente pelo Supabase (com suporte para até 50.000 usuários ativos por mês). Você não pagará nada por cadastrar novos administradores.
-                </p>
-                <p>
-                  2. **Privacidade Preservada:** Os novos administradores usam as suas próprias credenciais (e-mail + senha). Isso evita o compartilhamento ou comprometimento do e-mail institucional do hotel.
-                </p>
-                <p>
-                  3. **Email Confirm (Double Opt-In):** Se o novo usuário não conseguir logar de imediato, lembre-se de ir no seu painel do Supabase em **Authentication ➔ Users** e clicar em **"Confirm User"** para ativar o e-mail cadastrado caso o envio de e-mails de confirmação esteja habilitado.
-                </p>
+          {/* TAB 4: DATABASE & STORAGE */}
+          {activeTab === 'storage' && (
+            <div>
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
+                <div>
+                  <h2 className="text-lg font-bold text-slate-900">Banco de Dados & Mídia</h2>
+                  <p className="text-xs text-slate-500">
+                    Monitore o consumo de recursos e limpe arquivos inúteis para manter seu plano 100% gratuito.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={fetchStorageStats}
+                  disabled={isStorageLoading}
+                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-slate-300 hover:border-navy text-slate-700 hover:text-navy rounded-admin text-xs font-semibold bg-white transition-all disabled:opacity-50"
+                >
+                  <Loader2 className={`w-3.5 h-3.5 ${isStorageLoading ? 'animate-spin' : ''}`} />
+                  Atualizar
+                </button>
               </div>
+
+              {isStorageLoading && storageFiles.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20">
+                  <Loader2 className="w-8 h-8 text-navy animate-spin mb-3" />
+                  <p className="text-sm font-medium text-slate-500">Carregando estatísticas do servidor...</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Cards Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Database Card */}
+                    <div className="bg-white border border-slate-200 rounded-admin p-5 shadow-sm space-y-4">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div className="flex items-center gap-2">
+                          <Database className="w-5 h-5 text-navy" />
+                          <h3 className="font-bold text-slate-800 text-sm">Banco de Dados (PostgreSQL)</h3>
+                        </div>
+                        <span className="text-[10px] font-bold text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">
+                          Ativo
+                        </span>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs text-slate-500">
+                          <span>Uso Total:</span>
+                          <span className="font-bold text-slate-800">
+                            {dbSizeExact 
+                              ? formatBytes(dbSizeExact) 
+                              : `~${formatBytes((products.length * 512) + (categories.length * 128) + 102400)} (Estimado)`
+                            }
+                          </span>
+                        </div>
+
+                        {/* Progress Bar (Limit is 500MB = 524288000 bytes) */}
+                        <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-navy transition-all duration-500" 
+                            style={{ 
+                              width: `${Math.min(
+                                100, 
+                                ((dbSizeExact || ((products.length * 512) + (categories.length * 128) + 102400)) / 524288000) * 100
+                              )}%` 
+                            }}
+                          />
+                        </div>
+
+                        <div className="flex justify-between text-[10px] text-slate-400">
+                          <span>0 Bytes</span>
+                          <span>Limite Grátis: 500 MB</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-50/50 rounded p-3 text-[11px] text-slate-600 leading-relaxed border border-slate-100">
+                        <p>
+                          O banco de dados armazena os nomes dos pratos, categorias, administradores, descrições e textos. 
+                          Graças à nossa arquitetura otimizada, o consumo é extremamente baixo.
+                        </p>
+                      </div>
+
+                      {/* SQL Instructions Toggle */}
+                      <div className="pt-2 border-t border-slate-100">
+                        <button
+                          type="button"
+                          onClick={() => setShowSqlInstructions(!showSqlInstructions)}
+                          className="text-[10px] font-bold text-navy hover:underline flex items-center gap-1 uppercase tracking-wider"
+                        >
+                          {showSqlInstructions ? '▼ Ocultar Instruções de Conexão' : '▶ Ver Instruções de Conexão Real (Postgres SQL)'}
+                        </button>
+
+                        {showSqlInstructions && (
+                          <div className="mt-3 p-3 bg-slate-900 text-slate-350 rounded text-[10px] font-mono leading-relaxed space-y-2 border border-slate-850 select-all">
+                            <p className="text-gold font-bold text-[9px]">-- Execute isto no Supabase SQL Editor para ver a medição real:</p>
+                            <pre className="overflow-x-auto whitespace-pre p-2 bg-black/40 rounded text-slate-200">
+{`CREATE OR REPLACE FUNCTION get_db_size()
+RETURNS json AS $$
+DECLARE
+    db_size bigint;
+BEGIN
+    SELECT pg_database_size(current_database()) INTO db_size;
+    RETURN json_build_object('database_size_bytes', db_size);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;`}
+                            </pre>
+                            <p className="text-slate-500">
+                              Isso cria uma função RPC segura. Ao criá-la, o painel passará a medir o tamanho exato em bytes em tempo real!
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Storage Card */}
+                    <div className="bg-white border border-slate-200 rounded-admin p-5 shadow-sm space-y-4">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div className="flex items-center gap-2">
+                          <HardDrive className="w-5 h-5 text-navy" />
+                          <h3 className="font-bold text-slate-800 text-sm">Armazenamento de Mídia (Imagens)</h3>
+                        </div>
+                        <span className="text-[10px] font-bold text-navy-dark bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full flex-shrink-0">
+                          {storageFiles.length} Arquivos
+                        </span>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs text-slate-500">
+                          <span>Uso Total:</span>
+                          <span className="font-bold text-slate-800">{formatBytes(totalStorageSize)}</span>
+                        </div>
+
+                        {/* Progress Bar (Limit is 1GB = 1073741824 bytes) */}
+                        <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gold transition-all duration-500" 
+                            style={{ width: `${Math.min(100, (totalStorageSize / 1073741824) * 100)}%` }}
+                          />
+                        </div>
+
+                        <div className="flex justify-between text-[10px] text-slate-400">
+                          <span>0 Bytes</span>
+                          <span>Limite Grátis: 1.0 GB</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-50/50 rounded p-3 text-[11px] text-slate-600 leading-relaxed border border-slate-100 space-y-1.5">
+                        <p>
+                          Armazena as fotos enviadas para os produtos no bucket <code className="bg-slate-150 px-1 py-0.5 rounded text-navy font-semibold">product-images</code>.
+                        </p>
+                        <p className="font-semibold text-green-700">
+                          ✓ Otimização Ativa: As imagens são redimensionadas para exatamente 800x600px no seu navegador antes do upload, pesando apenas ~70 KB cada (mais de 15.000 imagens cabem no limite!).
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Garbage Collector / Orphaned Files Card */}
+                  <div className="bg-white border border-slate-200 rounded-admin p-5 shadow-sm space-y-4">
+                    <div className="border-b border-slate-100 pb-3">
+                      <h3 className="font-bold text-slate-800 text-sm">Limpeza de Disco e Imagens Órfãs</h3>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Apague imagens antigas que não estão sendo usadas por nenhum prato do cardápio para liberar espaço no Supabase.
+                      </p>
+                    </div>
+
+                    {orphanedFiles.length === 0 ? (
+                      <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-admin text-green-800">
+                        <div className="p-1.5 bg-green-600 text-white rounded-full flex-shrink-0">
+                          <Check className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold uppercase tracking-wider">Armazenamento Limpo</h4>
+                          <p className="text-[11px] mt-0.5 text-green-700">
+                            Excelente! Todas as imagens presentes no Supabase estão ativas e vinculadas a produtos reais no cardápio. Não há lixo ou arquivos órfãos.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-admin text-yellow-850">
+                          <div>
+                            <h4 className="text-xs font-bold uppercase tracking-wider">Lixo Identificado no Servidor</h4>
+                            <p className="text-[11px] mt-0.5 text-yellow-750">
+                              Detectamos <strong>{orphanedFiles.length} imagens órfãs</strong> (arquivos inúteis de pratos deletados ou editados no passado) ocupando cerca de <strong>{formatBytes(orphanedFiles.reduce((acc, f) => acc + (f.metadata?.size || f.size || 0), 0))}</strong> no total.
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleCleanOrphanedFiles}
+                            disabled={isCleaningStorage}
+                            className="flex items-center justify-center gap-1.5 px-4 py-2 bg-red-650 hover:bg-red-755 text-white rounded-admin text-xs uppercase tracking-widest font-semibold shadow-sm transition-colors disabled:opacity-50 flex-shrink-0"
+                          >
+                            {isCleaningStorage ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-3.5 h-3.5" />
+                            )}
+                            Excluir {orphanedFiles.length} Imagens Órfãs
+                          </button>
+                        </div>
+
+                        {/* List of orphaned files */}
+                        <div className="border border-slate-200 rounded-lg overflow-hidden">
+                          <div className="bg-slate-50 px-4 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                            Arquivos Órfãos Encontrados
+                          </div>
+                          <div className="divide-y divide-slate-100 max-h-40 overflow-y-auto">
+                            {orphanedFiles.map((file) => (
+                              <div key={file.id} className="px-4 py-2.5 flex items-center justify-between text-[11px] text-slate-650 hover:bg-slate-50/50">
+                                <span className="font-mono truncate max-w-xs md:max-w-md" title={file.name}>
+                                  {file.name}
+                                </span>
+                                <span className="font-semibold text-slate-800 flex-shrink-0 ml-4">
+                                  {formatBytes(file.metadata?.size || file.size || 0)}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </main>
