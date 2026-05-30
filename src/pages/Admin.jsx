@@ -443,8 +443,8 @@ export function Admin() {
               activeTab === 'storage' ? 'bg-navy text-white' : 'bg-white text-slate-650 hover:bg-slate-100 border border-slate-200'
             }`}
           >
-            <Database className="w-4 h-4" />
-            Banco & Mídia
+            <HardDrive className="w-4 h-4" />
+            Fotos & Mídia
           </button>
         </aside>
 
@@ -867,15 +867,14 @@ export function Admin() {
               </form>
             </div>
           )}
-
           {/* TAB 4: DATABASE & STORAGE */}
           {activeTab === 'storage' && (
             <div>
               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900">Banco de Dados & Mídia</h2>
+                  <h2 className="text-lg font-bold text-slate-900">Fotos & Mídia</h2>
                   <p className="text-xs text-slate-500">
-                    Monitore o consumo de recursos e limpe arquivos inúteis para manter seu plano 100% gratuito.
+                    Monitore o espaço ocupado pelas fotos do seu cardápio de forma simples e rápida.
                   </p>
                 </div>
                 <button
@@ -896,138 +895,44 @@ export function Admin() {
                 </div>
               ) : (
                 <div className="space-y-6">
-                  {/* Cards Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Database Card */}
-                    <div className="bg-white border border-slate-200 rounded-admin p-5 shadow-sm space-y-4">
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <div className="flex items-center gap-2">
-                          <Database className="w-5 h-5 text-navy" />
-                          <h3 className="font-bold text-slate-800 text-sm">Banco de Dados (PostgreSQL)</h3>
-                        </div>
-                        <span className="text-[10px] font-bold text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">
-                          Ativo
-                        </span>
+                  {/* Summary Card */}
+                  <div className="bg-white border border-slate-200 rounded-admin p-6 shadow-sm space-y-4">
+                    <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
+                      <div className="p-2 bg-navy/10 rounded-lg text-navy">
+                        <HardDrive className="w-5 h-5" />
                       </div>
-
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-xs text-slate-500">
-                          <span>Uso Total:</span>
-                          <span className="font-bold text-slate-800">
-                            {dbSizeExact 
-                              ? formatBytes(dbSizeExact) 
-                              : `~${formatBytes((products.length * 512) + (categories.length * 128) + 102400)} (Estimado)`
-                            }
-                          </span>
-                        </div>
-
-                        {/* Progress Bar (Limit is 500MB = 524288000 bytes) */}
-                        <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-navy transition-all duration-500" 
-                            style={{ 
-                              width: `${Math.min(
-                                100, 
-                                ((dbSizeExact || ((products.length * 512) + (categories.length * 128) + 102400)) / 524288000) * 100
-                              )}%` 
-                            }}
-                          />
-                        </div>
-
-                        <div className="flex justify-between text-[10px] text-slate-400">
-                          <span>0 Bytes</span>
-                          <span>Limite Grátis: 500 MB</span>
-                        </div>
-                      </div>
-
-                      <div className="bg-slate-50/50 rounded p-3 text-[11px] text-slate-600 leading-relaxed border border-slate-100">
-                        <p>
-                          O banco de dados armazena os nomes dos pratos, categorias, administradores, descrições e textos. 
-                          Graças à nossa arquitetura otimizada, o consumo é extremamente baixo.
-                        </p>
-                      </div>
-
-                      {/* SQL Instructions Toggle */}
-                      <div className="pt-2 border-t border-slate-100">
-                        <button
-                          type="button"
-                          onClick={() => setShowSqlInstructions(!showSqlInstructions)}
-                          className="text-[10px] font-bold text-navy hover:underline flex items-center gap-1 uppercase tracking-wider"
-                        >
-                          {showSqlInstructions ? '▼ Ocultar Instruções de Conexão' : '▶ Ver Instruções de Conexão Real (Postgres SQL)'}
-                        </button>
-
-                        {showSqlInstructions && (
-                          <div className="mt-3 p-3 bg-slate-900 text-slate-350 rounded text-[10px] font-mono leading-relaxed space-y-2 border border-slate-850 select-all">
-                            <p className="text-gold font-bold text-[9px]">-- Execute isto no Supabase SQL Editor para ver a medição real:</p>
-                            <pre className="overflow-x-auto whitespace-pre p-2 bg-black/40 rounded text-slate-200">
-{`CREATE OR REPLACE FUNCTION get_db_size()
-RETURNS json AS $$
-DECLARE
-    db_size bigint;
-BEGIN
-    SELECT pg_database_size(current_database()) INTO db_size;
-    RETURN json_build_object('database_size_bytes', db_size);
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;`}
-                            </pre>
-                            <p className="text-slate-500">
-                              Isso cria uma função RPC segura. Ao criá-la, o painel passará a medir o tamanho exato em bytes em tempo real!
-                            </p>
-                          </div>
-                        )}
+                      <div>
+                        <h3 className="font-bold text-slate-800 text-sm">Resumo do Armazenamento</h3>
+                        <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">Espaço ocupado em tempo real</p>
                       </div>
                     </div>
 
-                    {/* Storage Card */}
-                    <div className="bg-white border border-slate-200 rounded-admin p-5 shadow-sm space-y-4">
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <div className="flex items-center gap-2">
-                          <HardDrive className="w-5 h-5 text-navy" />
-                          <h3 className="font-bold text-slate-800 text-sm">Armazenamento de Mídia (Imagens)</h3>
-                        </div>
-                        <span className="text-[10px] font-bold text-navy-dark bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full flex-shrink-0">
-                          {storageFiles.length} Arquivos
-                        </span>
+                    <div className="grid grid-cols-2 gap-4 pt-2">
+                      <div className="bg-slate-50 p-4 border border-slate-100 rounded-admin text-center">
+                        <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total de Fotos</span>
+                        <span className="text-xl font-bold text-navy-dark">{storageFiles.length} arquivos</span>
                       </div>
-
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-xs text-slate-500">
-                          <span>Uso Total:</span>
-                          <span className="font-bold text-slate-800">{formatBytes(totalStorageSize)}</span>
-                        </div>
-
-                        {/* Progress Bar (Limit is 1GB = 1073741824 bytes) */}
-                        <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gold transition-all duration-500" 
-                            style={{ width: `${Math.min(100, (totalStorageSize / 1073741824) * 100)}%` }}
-                          />
-                        </div>
-
-                        <div className="flex justify-between text-[10px] text-slate-400">
-                          <span>0 Bytes</span>
-                          <span>Limite Grátis: 1.0 GB</span>
-                        </div>
+                      <div className="bg-slate-50 p-4 border border-slate-100 rounded-admin text-center">
+                        <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Espaço Utilizado</span>
+                        <span className="text-xl font-bold text-navy-dark">{formatBytes(totalStorageSize)}</span>
                       </div>
+                    </div>
 
-                      <div className="bg-slate-50/50 rounded p-3 text-[11px] text-slate-600 leading-relaxed border border-slate-100 space-y-1.5">
-                        <p>
-                          Armazena as fotos enviadas para os produtos no bucket <code className="bg-slate-150 px-1 py-0.5 rounded text-navy font-semibold">product-images</code>.
-                        </p>
-                        <p className="font-semibold text-green-700">
-                          ✓ Otimização Ativa: As imagens são redimensionadas para exatamente 800x600px no seu navegador antes do upload, pesando apenas ~70 KB cada (mais de 15.000 imagens cabem no limite!).
-                        </p>
-                      </div>
+                    <div className="bg-slate-50/50 rounded p-4 text-[11px] text-slate-650 leading-relaxed border border-slate-150">
+                      <p>
+                        ✓ <strong>Otimização Automática Ativa</strong>: Sempre que você insere ou substitui uma imagem no cardápio, 
+                        o sistema automaticamente ajusta o tamanho físico (800x600px) e realiza a compressão da foto no seu navegador antes de enviá-la ao servidor. 
+                        Isso garante um carregamento muito mais rápido para os clientes do restaurante e economiza 90% do seu espaço de armazenamento!
+                      </p>
                     </div>
                   </div>
 
-                  {/* Garbage Collector / Orphaned Files Card */}
-                  <div className="bg-white border border-slate-200 rounded-admin p-5 shadow-sm space-y-4">
+                  {/* Garbage Collector / Inactive files Card */}
+                  <div className="bg-white border border-slate-200 rounded-admin p-6 shadow-sm space-y-4">
                     <div className="border-b border-slate-100 pb-3">
-                      <h3 className="font-bold text-slate-800 text-sm">Limpeza de Disco e Imagens Órfãs</h3>
+                      <h3 className="font-bold text-slate-800 text-sm">Otimização de Espaço e Limpeza</h3>
                       <p className="text-xs text-slate-500 mt-0.5">
-                        Apague imagens antigas que não estão sendo usadas por nenhum prato do cardápio para liberar espaço no Supabase.
+                        Apague imagens inativas antigas (fotos substituídas ou de pratos excluídos no passado) para liberar espaço no servidor.
                       </p>
                     </div>
 
@@ -1037,54 +942,33 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;`}
                           <Check className="w-4 h-4" />
                         </div>
                         <div>
-                          <h4 className="text-xs font-bold uppercase tracking-wider">Armazenamento Limpo</h4>
+                          <h4 className="text-xs font-bold uppercase tracking-wider">Tudo Otimizado!</h4>
                           <p className="text-[11px] mt-0.5 text-green-700">
-                            Excelente! Todas as imagens presentes no Supabase estão ativas e vinculadas a produtos reais no cardápio. Não há lixo ou arquivos órfãos.
+                            Excelente! Todas as fotos no servidor estão vinculadas a pratos ativos no cardápio do restaurante. Seu espaço está 100% otimizado e limpo.
                           </p>
                         </div>
                       </div>
                     ) : (
-                      <div className="space-y-4">
-                        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-admin text-yellow-850">
-                          <div>
-                            <h4 className="text-xs font-bold uppercase tracking-wider">Lixo Identificado no Servidor</h4>
-                            <p className="text-[11px] mt-0.5 text-yellow-750">
-                              Detectamos <strong>{orphanedFiles.length} imagens órfãs</strong> (arquivos inúteis de pratos deletados ou editados no passado) ocupando cerca de <strong>{formatBytes(orphanedFiles.reduce((acc, f) => acc + (f.metadata?.size || f.size || 0), 0))}</strong> no total.
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={handleCleanOrphanedFiles}
-                            disabled={isCleaningStorage}
-                            className="flex items-center justify-center gap-1.5 px-4 py-2 bg-red-650 hover:bg-red-755 text-white rounded-admin text-xs uppercase tracking-widest font-semibold shadow-sm transition-colors disabled:opacity-50 flex-shrink-0"
-                          >
-                            {isCleaningStorage ? (
-                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                            ) : (
-                              <Trash2 className="w-3.5 h-3.5" />
-                            )}
-                            Excluir {orphanedFiles.length} Imagens Órfãs
-                          </button>
+                      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-4 bg-yellow-50 border border-yellow-200 rounded-admin text-yellow-800">
+                        <div>
+                          <h4 className="text-xs font-bold uppercase tracking-wider">Imagens Inativas Encontradas</h4>
+                          <p className="text-[11px] mt-0.5 text-yellow-700 leading-relaxed">
+                            Detectamos que existem <strong>{orphanedFiles.length} fotos antigas</strong> (de pratos editados ou excluídos anteriormente) que não estão mais sendo usadas no cardápio e estão ocupando <strong>{formatBytes(orphanedFiles.reduce((acc, f) => acc + (f.metadata?.size || f.size || 0), 0))}</strong> de forma inútil.
+                          </p>
                         </div>
-
-                        {/* List of orphaned files */}
-                        <div className="border border-slate-200 rounded-lg overflow-hidden">
-                          <div className="bg-slate-50 px-4 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
-                            Arquivos Órfãos Encontrados
-                          </div>
-                          <div className="divide-y divide-slate-100 max-h-40 overflow-y-auto">
-                            {orphanedFiles.map((file) => (
-                              <div key={file.id} className="px-4 py-2.5 flex items-center justify-between text-[11px] text-slate-650 hover:bg-slate-50/50">
-                                <span className="font-mono truncate max-w-xs md:max-w-md" title={file.name}>
-                                  {file.name}
-                                </span>
-                                <span className="font-semibold text-slate-800 flex-shrink-0 ml-4">
-                                  {formatBytes(file.metadata?.size || file.size || 0)}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
+                        <button
+                          type="button"
+                          onClick={handleCleanOrphanedFiles}
+                          disabled={isCleaningStorage}
+                          className="flex items-center justify-center gap-1.5 px-4 py-2 bg-red-650 hover:bg-red-755 text-white rounded-admin text-xs uppercase tracking-widest font-semibold shadow-sm transition-colors disabled:opacity-50 flex-shrink-0"
+                        >
+                          {isCleaningStorage ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-3.5 h-3.5" />
+                          )}
+                          Liberar Espaço Agora
+                        </button>
                       </div>
                     )}
                   </div>
