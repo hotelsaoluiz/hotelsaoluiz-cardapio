@@ -44,6 +44,11 @@ export function CategoryNav({ categories, activeCategoryId, onSelectCategory }) 
         .category-nav-scroll::-webkit-scrollbar {
           display: none; /* Safari and Chrome */
         }
+        @media (min-width: 768px) {
+          .category-nav-scroll {
+            justify-content: center;
+          }
+        }
       `}</style>
 
       {categories.map((category) => {

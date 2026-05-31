@@ -24,6 +24,11 @@ export function SubcategoryNav({ subcategories, activeSubcategory, onSelectSubca
         .subcategory-nav-scroll::-webkit-scrollbar {
           display: none; /* Safari and Chrome */
         }
+        @media (min-width: 768px) {
+          .subcategory-nav-scroll {
+            justify-content: center;
+          }
+        }
       `}</style>
 
       {/* "Todos" Option */}
