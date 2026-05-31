@@ -228,13 +228,18 @@ export function QRCodeDisplay() {
     generateAllPreviews()
   }, [])
 
-  // Trigger download from pre-generated previews
-  const downloadAsset = async (type) => {
+  // Trigger download from pre-generated previews (100% synchronous to prevent browser security blocks)
+  const downloadAsset = (type) => {
+    const dataUrl = previews[type]
+    if (!dataUrl) {
+      alert('A arte ainda está sendo gerada. Por favor, aguarde um segundo e tente novamente.')
+      return
+    }
+    
     setIsGenerating(type)
-    await new Promise((resolve) => setTimeout(resolve, 300)) // smooth transition loader
     try {
       const link = document.createElement('a')
-      link.href = previews[type]
+      link.href = dataUrl
       
       let filename = `qrcode-${hotelName.toLowerCase().replace(/\s+/g, '-')}.png`
       if (type === 'acrylic') {
@@ -250,7 +255,8 @@ export function QRCodeDisplay() {
     } catch (err) {
       alert('Erro ao baixar arquivo: ' + err.message)
     } finally {
-      setIsGenerating(null)
+      // Small timeout only to reset loader, does not affect the synchronous download event
+      setTimeout(() => setIsGenerating(null), 300)
     }
   }
 
