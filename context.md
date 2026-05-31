@@ -72,6 +72,17 @@ Armazena todos os itens disponíveis para venda.
 * `display_order` (`INTEGER`, NOT NULL, default: `0`): Índice utilizado para a ordenação sequencial personalizada de subcategorias e produtos.
 * `created_at` (`TIMESTAMPTZ`, default: `now()`): Data de registro.
 
+### Estrutura de 8 Macro-Categorias Consolidadas
+O menu digital é estruturado em exatamente 8 macro-categorias, dispostas pela ordem rígida (`display_order`) para garantir uma navegação intuitiva:
+1. **Bebidas & Vinhos** (Ordem `1`): Agrupa refrigerantes, águas, sucos, cervejas, coquetéis, doses, uísques, espumantes e a carta de vinhos (importados, nacionais e argentinos).
+2. **Entradas & Petiscos** (Ordem `2`): Agrupa pastéis, bolinhos, porções, petiscos e caldos/sopas.
+3. **Saladas** (Ordem `3`): Mix de folhas, Salada Ceasar e Salpicão. Exibidos diretamente, sem subcategorias associadas.
+4. **Peixes** (Ordem `4`): Pratos principais e grelhados de peixes, divididos em subcategorias explícitas: `Salmão`, `Tilápia` e `Traíra`.
+5. **Carnes & Grelhados** (Ordem `5`): Carnes vermelhas, aves/frangos e omeletes.
+6. **Massas & Risotos** (Ordem `6`): Massas artesanais e risotos especiais.
+7. **Lanches & Pizzas** (Ordem `7`): Lanches completos, torradas, baurus e pizzas.
+8. **Sobremesas** (Ordem `8`): Pudim de leite e petit gâteau.
+
 ---
 
 ## 4. Estrutura do Projeto (Árvore de Diretórios)
