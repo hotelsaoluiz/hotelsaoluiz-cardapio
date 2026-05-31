@@ -72,6 +72,7 @@ export function Admin() {
   const [editingCatName, setEditingCatName] = useState('')
   const [editingCatOrder, setEditingCatOrder] = useState('0')
   const [isUpdatingCategory, setIsUpdatingCategory] = useState(false)
+  const [isUpdatingCategoryOrder, setIsUpdatingCategoryOrder] = useState(false)
   const [deletingCategory, setDeletingCategory] = useState(null)
   const [isCategoryDeleting, setIsCategoryDeleting] = useState(false)
 
@@ -386,6 +387,39 @@ export function Admin() {
       alert('Erro ao reordenar subcategorias: ' + err.message)
     } finally {
       setIsUpdatingSubcategory(false)
+    }
+  }
+
+  // Handle Category Reordering (Bulk update category display_order in a single batch)
+  const handleReorderCategories = async (catList, index, direction) => {
+    const newCatList = [...catList]
+    const targetIndex = direction === 'up' ? index - 1 : index + 1
+    
+    if (targetIndex < 0 || targetIndex >= newCatList.length) return
+    
+    // Swap elements
+    const temp = newCatList[index]
+    newCatList[index] = newCatList[targetIndex]
+    newCatList[targetIndex] = temp
+    
+    setIsUpdatingCategoryOrder(true)
+    try {
+      const updates = newCatList.map((cat, idx) => ({
+        ...cat,
+        display_order: idx + 1
+      }))
+      
+      const { error } = await supabase
+        .from('categories')
+        .upsert(updates)
+        
+      if (error) throw error
+      
+      await queryClient.invalidateQueries({ queryKey: ['categories'] })
+    } catch (err) {
+      alert('Erro ao reordenar categorias: ' + err.message)
+    } finally {
+      setIsUpdatingCategoryOrder(false)
     }
   }
 
@@ -779,7 +813,7 @@ export function Admin() {
               ) : (
                 /* Inline Categories List */
                 <div className="border border-slate-200 rounded-admin overflow-hidden divide-y divide-slate-200">
-                  {categories.map((cat) => {
+                  {categories.map((cat, idx) => {
                     const isEditing = editingCategoryId === cat.id
                     const catProducts = products.filter((p) => p.category_id === cat.id)
                     const uniqueSubcats = Array.from(new Set(catProducts.map((p) => p.subcategory).filter(Boolean)))
@@ -852,9 +886,31 @@ export function Admin() {
                               </div>
                               
                               <div className="flex items-center justify-between md:justify-end gap-6">
-                                <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                                  <ListOrdered className="w-3.5 h-3.5 text-slate-450" />
-                                  <span>Ordem: {cat.display_order}</span>
+                                <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs text-slate-705 font-medium select-none">
+                                  <div className="flex items-center gap-0.5 mr-1 border-r border-slate-200 pr-1.5 flex-shrink-0">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleReorderCategories(categories, idx, 'up')}
+                                      disabled={idx === 0 || isUpdatingCategoryOrder}
+                                      className="text-slate-400 hover:text-navy disabled:opacity-30 p-0.5 transition-opacity"
+                                      title="Mover categoria para cima"
+                                    >
+                                      <ArrowUp className="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleReorderCategories(categories, idx, 'down')}
+                                      disabled={idx === categories.length - 1 || isUpdatingCategoryOrder}
+                                      className="text-slate-400 hover:text-navy disabled:opacity-30 p-0.5 transition-opacity"
+                                      title="Mover categoria para baixo"
+                                    >
+                                      <ArrowDown className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                  <span className="flex items-center gap-1">
+                                    <ListOrdered className="w-3.5 h-3.5 text-slate-450" />
+                                    Ordem: {cat.display_order}
+                                  </span>
                                 </div>
 
                                 <div className="flex items-center gap-2">
