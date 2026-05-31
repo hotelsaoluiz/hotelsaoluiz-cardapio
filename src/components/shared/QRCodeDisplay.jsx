@@ -7,7 +7,7 @@ export function QRCodeDisplay() {
   const hotelName = import.meta.env.VITE_HOTEL_NAME || 'Hotel São Luiz'
   
   const [activeTab, setActiveTab] = useState('qr') // 'qr' | 'acrylic' | 'wall'
-  const [isGenerating, setIsGenerating] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(null)
   const [isGeneratingPreviews, setIsGeneratingPreviews] = useState(true)
   const [previews, setPreviews] = useState({ qr: '', acrylic: '', wall: '' })
 
@@ -59,7 +59,11 @@ export function QRCodeDisplay() {
         ctx.fillStyle = '#FFFFFF'
         ctx.fillRect(0, 0, width, height)
       }
-      return canvas.toDataURL('image/png')
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+          resolve(blob ? URL.createObjectURL(blob) : '')
+        }, 'image/png')
+      })
     }
     
     // 1. Draw Background
@@ -200,7 +204,11 @@ export function QRCodeDisplay() {
     ctx.font = '14px "Inter", sans-serif'
     ctx.fillText(menuUrl.toUpperCase(), width / 2, type === 'acrylic' ? 1080 : 1465)
     
-    return canvas.toDataURL('image/png')
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        resolve(blob ? URL.createObjectURL(blob) : '')
+      }, 'image/png')
+    })
   }
 
   // Pre-generate previews on mount or URL changes
@@ -379,7 +387,7 @@ export function QRCodeDisplay() {
               disabled={isGenerating !== null || isGeneratingPreviews}
               className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-semibold uppercase tracking-wider transition-colors rounded ${
                 activeTab === 'qr' 
-                  ? 'bg-slate-850 hover:bg-slate-900 text-white' 
+                  ? 'bg-navy hover:bg-navy-mid text-white shadow-sm' 
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-650'
               }`}
             >
