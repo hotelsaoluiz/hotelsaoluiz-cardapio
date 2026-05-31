@@ -1034,14 +1034,8 @@ export function Admin() {
 
           {/* TAB 3: QR CODE GENERATOR */}
           {activeTab === 'qrcode' && (
-            <div className="max-w-md mx-auto py-6">
-              <div className="text-center mb-6">
-                <h2 className="text-lg font-bold text-slate-900">QR Code do Cardápio</h2>
-                <p className="text-xs text-slate-500">Imprima este QR Code e espalhe nas mesas do restaurante ou nos quartos do hotel.</p>
-              </div>
-              <div className="border border-slate-200 rounded-admin p-6 bg-slate-50">
-                <QRCodeDisplay />
-              </div>
+            <div className="w-full py-2">
+              <QRCodeDisplay />
             </div>
           )}
 

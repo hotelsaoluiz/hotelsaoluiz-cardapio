@@ -255,7 +255,7 @@ export function QRCodeDisplay() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 items-stretch w-full max-w-5xl mx-auto">
+    <div className="flex flex-col lg:flex-row gap-8 items-stretch w-full mx-auto">
       
       {/* Hidden QR Code Canvas used for rendering source */}
       <div style={{ display: 'none' }}>
@@ -269,8 +269,8 @@ export function QRCodeDisplay() {
         />
       </div>
 
-      {/* LEFT COLUMN: Premium Preview Window */}
-      <div className="flex-grow flex flex-col justify-center items-center p-6 bg-navy-dark border border-gold shadow-md text-center lg:w-[480px] flex-shrink-0 relative overflow-hidden">
+      {/* LEFT COLUMN: Premium Preview Window (Constrained to 340px for PC sidebar optimization) */}
+      <div className="w-full lg:w-[340px] flex flex-col justify-center items-center p-6 bg-navy-dark border border-gold shadow-md text-center flex-shrink-0 relative overflow-hidden">
         {/* Decorative corner frames on visualizer panel */}
         <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-gold/40" />
         <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-gold/40" />
@@ -282,14 +282,14 @@ export function QRCodeDisplay() {
         </span>
 
         {isGeneratingPreviews ? (
-          <div className="w-[280px] h-[380px] bg-slate-900/40 border border-slate-800 flex flex-col items-center justify-center gap-3">
+          <div className="w-[240px] h-[340px] bg-slate-900/40 border border-slate-800 flex flex-col items-center justify-center gap-3">
             <Loader2 className="w-8 h-8 text-gold animate-spin" />
             <p className="text-xs text-slate-400 font-medium">Gerando mockups...</p>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center min-h-[400px]">
+          <div className="flex flex-col items-center justify-center min-h-[380px] w-full">
             {activeTab === 'qr' && previews.qr && (
-              <div className="bg-white p-6 border-2 border-gold shadow-2xl w-[260px] h-[260px] flex items-center justify-center">
+              <div className="bg-white p-6 border-2 border-gold shadow-2xl w-[220px] h-[220px] flex items-center justify-center">
                 <img 
                   src={previews.qr} 
                   alt="QR Code Preview" 
@@ -301,7 +301,7 @@ export function QRCodeDisplay() {
             {activeTab === 'acrylic' && previews.acrylic && (
               <div 
                 className="relative bg-navy-dark border-4 border-gold shadow-2xl overflow-hidden"
-                style={{ width: '280px', height: '420px', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}
+                style={{ width: '240px', height: '360px', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}
               >
                 <img 
                   src={previews.acrylic} 
@@ -316,7 +316,7 @@ export function QRCodeDisplay() {
             {activeTab === 'wall' && previews.wall && (
               <div 
                 className="relative bg-navy-dark border-4 border-gold shadow-2xl overflow-hidden"
-                style={{ width: '315px', height: '420px', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}
+                style={{ width: '270px', height: '360px', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}
               >
                 <img 
                   src={previews.wall} 
@@ -326,13 +326,13 @@ export function QRCodeDisplay() {
               </div>
             )}
 
-            <div className="mt-4">
-              <span className="text-[10px] text-slate-350 tracking-wider">
+            <div className="mt-4 px-2 w-full">
+              <span className="text-[10px] text-slate-350 tracking-wider block">
                 {activeTab === 'qr' && 'Imagem PNG de 1024x1024px com alta nitidez.'}
                 {activeTab === 'acrylic' && 'Arte diagramada vertical de 10x15cm (800x1200px) para acrílicos.'}
                 {activeTab === 'wall' && 'Placa nobre decorativa de recepção (1200x1600px) para parede.'}
               </span>
-              <span className="block text-[11px] font-mono text-gold-light mt-1 select-all break-all opacity-80">
+              <span className="block text-[10px] font-mono text-gold-light mt-1 select-all break-all opacity-85">
                 {menuUrl}
               </span>
             </div>
@@ -340,17 +340,17 @@ export function QRCodeDisplay() {
         )}
       </div>
 
-      {/* RIGHT COLUMN: Interactive Control & Selection Suite */}
-      <div className="flex-grow flex flex-col justify-between gap-6">
+      {/* RIGHT COLUMN: Interactive Control & Selection Suite (PC Optimized Stacked Cards) */}
+      <div className="flex-grow flex flex-col justify-start gap-4">
         
         {/* CARD 1: Pure QR Code Option */}
         <div 
           onClick={() => setActiveTab('qr')}
-          className={`cursor-pointer bg-white border rounded-admin p-5 flex flex-col justify-between shadow-sm transition-all hover:shadow-md ${
+          className={`cursor-pointer bg-white border rounded-admin p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between shadow-sm transition-all hover:shadow-md gap-4 ${
             activeTab === 'qr' ? 'border-navy ring-1 ring-navy' : 'border-slate-200'
           }`}
         >
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-4 flex-grow">
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
               activeTab === 'qr' ? 'bg-navy text-white' : 'bg-slate-100 text-slate-500'
             }`}>
@@ -358,39 +358,43 @@ export function QRCodeDisplay() {
             </div>
             <div>
               <h4 className="text-sm font-bold text-slate-800">Apenas o QR Code (PNG)</h4>
-              <p className="text-xs text-slate-500 leading-relaxed mt-1">
+              <p className="text-xs text-slate-500 leading-relaxed mt-0.5 max-w-xl">
                 Download da imagem pura e limpa do QR Code em altíssima definição (1024px). 
                 Ideal para incorporar em cardápios impressos, comandas existentes ou enviar ao designer.
               </p>
             </div>
           </div>
-          {activeTab === 'qr' && (
+          <div className="w-full md:w-[200px] flex-shrink-0">
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 downloadAsset('qr')
               }}
               disabled={isGenerating !== null || isGeneratingPreviews}
-              className="mt-4 w-full flex items-center justify-center gap-2 py-2 px-4 bg-slate-800 hover:bg-slate-900 text-white disabled:opacity-50 text-xs font-semibold uppercase tracking-wider transition-colors rounded"
+              className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-semibold uppercase tracking-wider transition-colors rounded ${
+                activeTab === 'qr' 
+                  ? 'bg-slate-850 hover:bg-slate-900 text-white' 
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-650'
+              }`}
             >
               {isGenerating === 'qr' ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <Download className="w-4 h-4" />
               )}
-              Baixar Apenas QR Code (PNG)
+              {activeTab === 'qr' ? 'Baixar PNG Pura' : 'Visualizar Arte'}
             </button>
-          )}
+          </div>
         </div>
 
         {/* CARD 2: Acrylic Table Stand Option */}
         <div 
           onClick={() => setActiveTab('acrylic')}
-          className={`cursor-pointer bg-white border rounded-admin p-5 flex flex-col justify-between shadow-sm transition-all hover:shadow-md ${
+          className={`cursor-pointer bg-white border rounded-admin p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between shadow-sm transition-all hover:shadow-md gap-4 ${
             activeTab === 'acrylic' ? 'border-navy ring-1 ring-navy' : 'border-slate-200'
           }`}
         >
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-4 flex-grow">
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
               activeTab === 'acrylic' ? 'bg-navy text-white' : 'bg-slate-100 text-slate-500'
             }`}>
@@ -398,39 +402,43 @@ export function QRCodeDisplay() {
             </div>
             <div>
               <h4 className="text-sm font-bold text-slate-800">Suporte de Acrílico de Mesa (10x15cm)</h4>
-              <p className="text-xs text-slate-500 leading-relaxed mt-1">
+              <p className="text-xs text-slate-500 leading-relaxed mt-0.5 max-w-xl">
                 Gera um folheto vertical nobre estilizado com a identidade visual do hotel, fontes grandes e brasão. 
                 Perfeito para colocar em acrílicos nas mesas do restaurante ou nas cômodas dos quartos.
               </p>
             </div>
           </div>
-          {activeTab === 'acrylic' && (
+          <div className="w-full md:w-[200px] flex-shrink-0">
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 downloadAsset('acrylic')
               }}
               disabled={isGenerating !== null || isGeneratingPreviews}
-              className="mt-4 w-full flex items-center justify-center gap-2 py-2 px-4 bg-navy hover:bg-navy-mid text-white disabled:opacity-50 text-xs font-semibold uppercase tracking-wider transition-colors rounded shadow-sm"
+              className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-semibold uppercase tracking-wider transition-colors rounded ${
+                activeTab === 'acrylic' 
+                  ? 'bg-navy hover:bg-navy-mid text-white shadow-sm' 
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-650'
+              }`}
             >
               {isGenerating === 'acrylic' ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <Download className="w-4 h-4" />
               )}
-              Baixar Arte de Mesa (Acrílico)
+              {activeTab === 'acrylic' ? 'Baixar Arte' : 'Visualizar Arte'}
             </button>
-          )}
+          </div>
         </div>
 
         {/* CARD 3: Wall Plaque Option */}
         <div 
           onClick={() => setActiveTab('wall')}
-          className={`cursor-pointer bg-white border rounded-admin p-5 flex flex-col justify-between shadow-sm transition-all hover:shadow-md ${
+          className={`cursor-pointer bg-white border rounded-admin p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between shadow-sm transition-all hover:shadow-md gap-4 ${
             activeTab === 'wall' ? 'border-navy ring-1 ring-navy' : 'border-slate-200'
           }`}
         >
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-4 flex-grow">
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
               activeTab === 'wall' ? 'bg-navy text-white' : 'bg-slate-100 text-slate-500'
             }`}>
@@ -438,29 +446,33 @@ export function QRCodeDisplay() {
             </div>
             <div>
               <h4 className="text-sm font-bold text-slate-800">Placa Decorativa de Parede</h4>
-              <p className="text-xs text-slate-500 leading-relaxed mt-1">
+              <p className="text-xs text-slate-500 leading-relaxed mt-0.5 max-w-xl">
                 Gera um banner colonial nobre com bordas duplas em ouro e cantos coloniais. 
                 Perfeito para imprimir em tamanho maior (A4 ou A3), enquadrar e afixar na recepção ou parede de entrada.
               </p>
             </div>
           </div>
-          {activeTab === 'wall' && (
+          <div className="w-full md:w-[200px] flex-shrink-0">
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 downloadAsset('wall')
               }}
               disabled={isGenerating !== null || isGeneratingPreviews}
-              className="mt-4 w-full flex items-center justify-center gap-2 py-2 px-4 bg-navy hover:bg-navy-mid text-white disabled:opacity-50 text-xs font-semibold uppercase tracking-wider transition-colors rounded shadow-sm"
+              className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-semibold uppercase tracking-wider transition-colors rounded ${
+                activeTab === 'wall' 
+                  ? 'bg-navy hover:bg-navy-mid text-white shadow-sm' 
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-650'
+              }`}
             >
               {isGenerating === 'wall' ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <Download className="w-4 h-4" />
               )}
-              Baixar Placa de Parede
+              {activeTab === 'wall' ? 'Baixar Placa' : 'Visualizar Arte'}
             </button>
-          )}
+          </div>
         </div>
 
       </div>
