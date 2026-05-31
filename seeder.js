@@ -251,12 +251,12 @@ async function run() {
       
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: 'administrador@hotelsaoluiz.com',
-        password: 'hslcardapio'
+        password: 'hotelsaoluiz'
       })
 
       if (authError) {
         console.warn('Alerta: Não foi possível autenticar localmente:', authError.message)
-        console.log('Dica: Certifique-se de criar o usuário "administrador@hotelsaoluiz.com" com a senha "hslcardapio" no painel Authentication do Supabase.')
+        console.log('Dica: Certifique-se de criar o usuário "administrador@hotelsaoluiz.com" com a senha "hotelsaoluiz" no painel Authentication do Supabase.')
         console.log('Continuando tentativa direta no banco de dados (pode falhar se RLS estiver ativo)...')
       } else {
         console.log('Autenticação de administrador realizada com sucesso! Token de sessão obtido.')
