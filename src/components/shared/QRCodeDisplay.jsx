@@ -373,8 +373,7 @@ export function QRCodeDisplay() {
             <div>
               <h4 className="text-sm font-bold text-slate-800">Apenas o QR Code (PNG)</h4>
               <p className="text-xs text-slate-500 leading-relaxed mt-0.5 max-w-xl">
-                Download da imagem pura e limpa do QR Code em altíssima definição (1024px). 
-                Ideal para incorporar em cardápios impressos, comandas existentes ou enviar ao designer.
+                Download do arquivo de imagem puro do QR Code em altíssima resolução (1024px).
               </p>
             </div>
           </div>
@@ -417,8 +416,7 @@ export function QRCodeDisplay() {
             <div>
               <h4 className="text-sm font-bold text-slate-800">Suporte de Acrílico de Mesa (10x15cm)</h4>
               <p className="text-xs text-slate-500 leading-relaxed mt-0.5 max-w-xl">
-                Gera um folheto vertical nobre estilizado com a identidade visual do hotel, fontes grandes e brasão. 
-                Perfeito para colocar em acrílicos nas mesas do restaurante ou nas cômodas dos quartos.
+                Arte no tamanho 10x15cm, perfeita para suportes acrílicos de mesas e balcões.
               </p>
             </div>
           </div>
@@ -461,8 +459,7 @@ export function QRCodeDisplay() {
             <div>
               <h4 className="text-sm font-bold text-slate-800">Placa Decorativa de Parede</h4>
               <p className="text-xs text-slate-500 leading-relaxed mt-0.5 max-w-xl">
-                Gera um banner colonial nobre com bordas duplas em ouro e cantos coloniais. 
-                Perfeito para imprimir em tamanho maior (A4 ou A3), enquadrar e afixar na recepção ou parede de entrada.
+                Arte diagramada em formato A4 ou A3, ideal para enquadrar e fixar na recepção ou nas paredes.
               </p>
             </div>
           </div>
