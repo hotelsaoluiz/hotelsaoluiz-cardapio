@@ -18,9 +18,9 @@ export function DecoHeader() {
         textAlign: 'center',
       }}
     >
-      {/* 2. HotelLogo size=52 with gold border, centered, mb 10px */}
+      {/* 2. HotelLogo size=104 with gold border, centered, mb 10px */}
       <div style={{ marginBottom: '10px' }}>
-        <HotelLogo size={52} borderColor="var(--gold)" />
+        <HotelLogo size={104} borderColor="var(--gold)" />
       </div>
 
       {/* 3. HOTEL SÃO LUIZ: font-ui, 11px, letter-spacing 0.35em, gold, uppercase */}
