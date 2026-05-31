@@ -1,29 +1,4 @@
 import React from 'react'
-import { 
-  CupSoda, 
-  UtensilsCrossed, 
-  Pizza, 
-  Soup, 
-  Fish, 
-  Beef, 
-  Wheat, 
-  Cake,
-  Utensils
-} from 'lucide-react'
-
-// Helper function mapping category names to visual icons dynamically
-const getCategoryIcon = (categoryName) => {
-  const name = categoryName.toLowerCase()
-  if (name.includes('bebida')) return <CupSoda size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('entrada') || name.includes('petisco')) return <UtensilsCrossed size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('grelhado') || name.includes('carne')) return <Beef size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('peixe') || name.includes('mar')) return <Fish size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('massa') || name.includes('risoto')) return <Wheat size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('sopa')) return <Soup size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('lanche')) return <Pizza size={13} style={{ flexShrink: 0 }} />
-  if (name.includes('sobremesa')) return <Cake size={13} style={{ flexShrink: 0 }} />
-  return <Utensils size={13} style={{ flexShrink: 0 }} />
-}
 
 export function CategoryNav({ categories, activeCategoryId, onSelectCategory }) {
   return (
@@ -61,7 +36,7 @@ export function CategoryNav({ categories, activeCategoryId, onSelectCategory }) 
               fontFamily: 'var(--font-ui)',
               fontSize: '10px', // Slightly larger font-size for better senior readability
               fontWeight: isActive ? '600' : '400',
-              letterSpacing: '0.15em', // slightly reduced from 0.22em to accommodate the icon beautifully
+              letterSpacing: '0.2em', // Premium standard tracking
               textTransform: 'uppercase',
               padding: '12px 18px', // slightly increased vertical padding
               border: 'none',
@@ -76,10 +51,8 @@ export function CategoryNav({ categories, activeCategoryId, onSelectCategory }) 
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '6px', // spacing between icon and text label
             }}
           >
-            {getCategoryIcon(category.name)}
             <span>{category.name}</span>
           </button>
         )
