@@ -36,7 +36,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 console.log('Iniciando conexão com o Supabase:', supabaseUrl)
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// 2. Full Parsed Menu Data Structure
+// 2. Full 16 Categories matching design specs
 const categoriesData = [
   { name: 'Bebidas', order: 1 },
   { name: 'Uísque', order: 2 },
@@ -56,6 +56,7 @@ const categoriesData = [
   { name: 'Sobremesas', order: 16 }
 ]
 
+// 3. Perfect Products Mapping matching user inputs and detailed subcategories
 const productsData = {
   'Bebidas': [
     { name: 'Água mineral (com ou sem gás)', price: 5.00 },
@@ -80,10 +81,10 @@ const productsData = {
     { name: 'Aperol Spritz (Aperol c/ espumante)', price: 35.00 }
   ],
   'Uísque': [
-    { name: 'Chivas (12 anos) - Importado', price: 20.00 },
-    { name: 'Logan (12 anos) - Importado', price: 18.00 },
-    { name: 'Johnnie Walker - Importado', price: 19.00 },
-    { name: 'Old Eight - Nacional', price: 10.00 }
+    { name: 'Chivas (12 anos)', price: 20.00, subcategory: 'Importados' },
+    { name: 'Logan (12 anos)', price: 18.00, subcategory: 'Importados' },
+    { name: 'Johnnie Walker', price: 19.00, subcategory: 'Importados' },
+    { name: 'Old Eight', price: 10.00, subcategory: 'Nacionais' }
   ],
   'Espumante': [
     { name: 'Freixenet (semi sec)', price: 109.00 },
@@ -92,36 +93,36 @@ const productsData = {
     { name: 'Chandon Extra Brut', price: 130.00 }
   ],
   'Carta de Vinhos': [
-    { name: '8 KM Cabernet Sauvignon - Importado', price: 58.00 },
-    { name: 'Casillero Del Diablo Cabernet - Importado', price: 109.00 },
-    { name: 'Casillero Del Diablo Sauvignon Blanc - Importado', price: 109.00 },
-    { name: 'Casillero Del Diablo Carmenere - Importado', price: 109.00 },
-    { name: 'Casillero Del Diablo Chardonnay - Importado', price: 109.00 },
-    { name: 'Gato Negro Cabernet Sauvignon - Importado', price: 89.00 },
-    { name: 'Gato Negro Merlot - Importado', price: 89.00 },
-    { name: 'Reservado Concha Y Toro Cabernet Sauvignon - Importado', price: 89.00 },
-    { name: 'Reservado Concha Y Toro Sauvignon Blanc - Importado', price: 89.00 },
-    { name: 'Don Laurindo Cabernet Sauvignon - Nacional', price: 104.00 },
-    { name: 'Don Laurindo Merlot - Nacional', price: 118.00 },
-    { name: 'Don Laurindo Tannat - Nacional', price: 120.00 },
-    { name: 'Don Laurindo Malbec - Nacional', price: 115.00 },
-    { name: 'Don Pedrito Cabernet Sauvignon - Nacional', price: 95.00 },
-    { name: 'Don Pedrito Malbec - Nacional', price: 99.00 },
-    { name: 'Don Pedrito Merlot - Nacional', price: 99.00 },
-    { name: 'Taça de Vinho Tinto Seco Colonial (300ml)', price: 18.00 },
-    { name: 'Taça de Vinho Tinto Suave Colonial (300ml)', price: 18.00 },
-    { name: 'Rutini Malbec - Argentino', price: 279.00 },
-    { name: 'DV Catena Malbec - Argentino', price: 199.00 },
-    { name: 'DV Catena Cabernet Malbec - Argentino', price: 179.00 },
-    { name: 'Angelica Zapata Cabernet - Argentino', price: 269.00 },
-    { name: 'Angelica Zapata Malbec - Argentino', price: 279.00 },
-    { name: 'Cordero com Piel de Lobo Malbec - Argentino', price: 79.00 },
-    { name: 'Cordero del Lobo Chardonnay - Argentino', price: 79.00 },
-    { name: 'Cordero Rose Malbec - Argentino', price: 79.00 },
-    { name: 'Perro Callejero Malbec - Argentino', price: 109.00 },
-    { name: 'La Linda Chardonnay - Argentino', price: 109.00 },
-    { name: 'La Linda Rose Malbec - Argentino', price: 109.00 },
-    { name: 'Latitude 33 Malbec - Argentino', price: 109.00 }
+    { name: '8 KM Cabernet Souvignon', price: 58.00, subcategory: 'Importados' },
+    { name: 'Casillero Del Diablo Cabernet', price: 109.00, subcategory: 'Importados' },
+    { name: 'Casillero Del Diablo Sauvignon Blanc', price: 109.00, subcategory: 'Importados' },
+    { name: 'Casillero Del Diablo Carmeniere', price: 109.00, subcategory: 'Importados' },
+    { name: 'Casillero Del Diablo Chardonay', price: 109.00, subcategory: 'Importados' },
+    { name: 'Gato Negro Cabernet Sauvignon', price: 89.00, subcategory: 'Importados' },
+    { name: 'Gato Negro Merlot', price: 89.00, subcategory: 'Importados' },
+    { name: 'Reservado Concha Y Toro Cabernet Sauvignon', price: 89.00, subcategory: 'Importados' },
+    { name: 'Reservado Concha Y Toro Sauvignon Blanco', price: 89.00, subcategory: 'Importados' },
+    { name: 'Don Laurindo Cabernet Sauvignon', price: 104.00, subcategory: 'Nacionais' },
+    { name: 'Don Laurindo Merlot', price: 118.00, subcategory: 'Nacionais' },
+    { name: 'Don Laurindo Tannat', price: 120.00, subcategory: 'Nacionais' },
+    { name: 'Don Laurindo Malbec', price: 115.00, subcategory: 'Nacionais' },
+    { name: 'Don Pedrito Cabernet Sauvignon', price: 95.00, subcategory: 'Nacionais' },
+    { name: 'Don Pedrito Malbec', price: 99.00, subcategory: 'Nacionais' },
+    { name: 'Don Pedrito Merlot', price: 99.00, subcategory: 'Nacionais' },
+    { name: 'Taça de Vinho Tinto Seco Colonial (300ml)', price: 18.00, subcategory: 'Nacionais' },
+    { name: 'Taça de Vinho Tinto Suave Colonial (300ml)', price: 18.00, subcategory: 'Nacionais' },
+    { name: 'Rutini Malbec', price: 279.00, subcategory: 'Argentinos' },
+    { name: 'DV Catena Malbec', price: 199.00, subcategory: 'Argentinos' },
+    { name: 'DV Catena Cabernet Malbec', price: 179.00, subcategory: 'Argentinos' },
+    { name: 'Angelica Zapata Cabernet', price: 269.00, subcategory: 'Argentinos' },
+    { name: 'Angelica Zapata Malbec', price: 279.00, subcategory: 'Argentinos' },
+    { name: 'Cordero com Piel de Lobo Malbec', price: 79.00, subcategory: 'Argentinos' },
+    { name: 'Cordero del Lobo Chardonay', price: 79.00, subcategory: 'Argentinos' },
+    { name: 'Cordero Rose Malbec', price: 79.00, subcategory: 'Argentinos' },
+    { name: 'Perro Callejero Malbec', price: 109.00, subcategory: 'Argentinos' },
+    { name: 'La Linda Chardonay', price: 109.00, subcategory: 'Argentinos' },
+    { name: 'La Linda Rose Malbec', price: 109.00, subcategory: 'Argentinos' },
+    { name: 'Latitude 33 Malbec', price: 109.00, subcategory: 'Argentinos' }
   ],
   'Entradas': [
     { name: 'Pastéis Presunto e Queijo (6 unidades)', price: 9.00 },
@@ -136,7 +137,7 @@ const productsData = {
     { name: 'Tilápia a Milanesa', price: 40.00, description: '350g de iscas de peixe a milanesa' },
     { name: 'Tábua de Frios', price: 50.00, description: 'Queijo, presunto, pepino, azeitona e salame' },
     { name: 'Batata Frita', price: 30.00, description: '300g de batata palito' },
-    { name: 'Batata Frita c/ cheddar e bacon', price: 55.00, description: 'Batata palito, bacon e queijo cheddar' }
+    { name: 'Batata Frita c/ chedder e bacon', price: 55.00, description: 'Batata palito, bacon e queijo chedder' }
   ],
   'Porções': [
     { name: 'Arroz', price: 13.00 },
@@ -149,8 +150,8 @@ const productsData = {
     { name: 'Xis Bacon', price: 48.00, description: 'Bacon, presunto, queijo, milho, ervilha, tomate, alface, maionese, ovo' },
     { name: 'Torrada Simples', price: 16.00, description: 'Presunto e queijo' },
     { name: 'Torrada completa', price: 24.00, description: 'Presunto, queijo, tomate, alface, ovo' },
-    { name: 'Pizza Família', price: 70.00, description: 'Frango com requeijão, mussarela, calabresa, lombo com requeijão, bacon e cheddar' },
-    { name: 'Pizza Média', price: 58.00, description: 'Frango com requeijão, mussarela, calabresa, lombo com requeijão, bacon e cheddar' }
+    { name: 'Pizza Família', price: 70.00, description: 'Frango com requeijão, mussarela, calabresa, lombo com requeijão, bacon e chedder' },
+    { name: 'Pizza Média', price: 58.00, description: 'Frango com requeijão, mussarela, calabresa, lombo com requeijão, bacon e chedder' }
   ],
   'Sopas': [
     { name: 'Canja * Servido na sopeira, p/1 pessoa', price: 27.00, description: 'Arroz, frango, cenoura e batata' },
@@ -159,11 +160,11 @@ const productsData = {
   ],
   'Saladas': [
     { name: 'Mix de folhas * Empratado, porção p/1 pessoa', price: 19.00, description: 'Alface, rúcula, tomate e cebola roxa' },
-    { name: 'Salada Caesar * Empratado, porção p/1 pessoa', price: 33.00, description: 'Frango grelhado, alface americana, uva passa, molho e croutons' },
+    { name: 'Salada Ceasar * Empratado, porção p/1 pessoa', price: 33.00, description: 'Frango grelhado, alface americana, uva passa, molho e crótons' },
     { name: 'Salpicão * Empratado, porção p/1 pessoa', price: 22.00, description: 'Frango desfiado, maionese, cenoura ralada, pimentões picados, batata palha, presunto e queijo' }
   ],
   'Omeletes': [
-    { name: 'Omelete de legumes', price: 27.00 },
+    { name: 'Omeletes de legumes', price: 27.00 },
     { name: 'Omelete de presunto e queijo', price: 31.00 },
     { name: 'Omelete de presunto, queijo e salaminho', price: 35.00 }
   ],
@@ -171,7 +172,7 @@ const productsData = {
     { name: 'Risoto de Camarão * Empratado, porção p/1 pessoa', price: 62.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, parmesão, vinho branco e camarão grelhado' },
     { name: 'Risoto ao Funghi * Empratado, porção p/1 pessoa', price: 61.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, parmesão, vinho branco, Funghi e medalhões de filé grelhado' },
     { name: 'Risoto de abóbora cabotiá * Empratado, porção p/1 pessoa', price: 61.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, abóbora cabotiá, parmesão, vinho branco e medalhões de filé grelhado' },
-    { name: 'Risoto de salmão e limão siciliano * Empratado, porção p/1 pessoa', price: 69.00, description: 'Arroz arbóreo, raspas de limão siciliano, salmão grelhado, cebola, alho poro, manteiga, palmito, parmesão, vinho branco' },
+    { name: 'Risoto de salmão e limão silciliano * Empratado, porção p/1 pessoa', price: 69.00, description: 'Arroz arbóreo, raspas de limão siciliano, salmão grelhado, cebola, alho poro, manteiga, palmito, parmesão, vinho branco' },
     { name: 'Risoto de rúcula c/ salmão * Empratado, porção p/1 pessoa', price: 69.00, description: 'Arroz arbóreo, rúcula, salmão grelhado, tomate seco, cebola, alho poro, manteiga, palmito, parmesão, vinho branco' },
     { name: 'Risoto de gorgonzola c/ filé * Empratado, porção p/1 pessoa', price: 64.00, description: 'Arroz arbóreo, cebola, alho poro, gorgonzola, manteiga, parmesão, vinho branco e filé grelhado' }
   ],
@@ -195,8 +196,8 @@ const productsData = {
     { name: 'Medalhões de Filé', price: 77.00, description: 'Medalhões de filé (200g) envolto com tiras de bacon, arroz, batata frita' },
     { name: 'A La Minuta de Filé', price: 78.00, description: 'Filé grelhado (200g), arroz, feijão, batata frita, mix de folhas e ovo' },
     { name: 'Estrogonof de Filé', price: 81.00, description: 'Iscas de filé grelhado (250g), molho de strogonof, arroz e batata palha' },
-    { name: 'Carreteiro de Charque', price: 55.00, description: 'Charque receita tradicional de carreteiro de charque. Servido na panela de ferro.' },
-    { name: 'Carreteiro de Filé', price: 58.00, description: 'Iscas de filé, cebola, tomate, molho de tomate e arroz. Servido na panela de ferro.' }
+    { name: 'Carreteiro de Charque * Servido na panela de ferro, p/ 1 pessoa', price: 55.00, description: 'Charque receita tradicional de carreteiro de charque.' },
+    { name: 'Carreteiro de Filé * Servido na panela de ferro, p/ 1 pessoa', price: 58.00, description: 'Iscas de filé, cebola, tomate, molho de tomate e arroz' }
   ],
   'Massas': [
     { name: 'Espaguete á bolonhesa', price: 57.00, description: 'Espaguete artesanal, molho vermelho, queijo e iscas de filé' },
@@ -215,7 +216,7 @@ const productsData = {
     { name: 'Frango Grelhado', price: 45.00, description: 'Frango grelhado (200g), arroz branco, mix de folhas' },
     { name: 'Frango a parmegiana', price: 69.00, description: 'Filé de frango (200g) empanado e frito, arroz, batata frita e mix de folhas' },
     { name: 'Frango a milanesa', price: 48.00, description: 'Filé de frango (200g), arroz branco, alface e tomate' },
-    { name: 'A La minuta de Frango', price: 60.00, description: 'Filé de frango grelhado (200g), arroz, batata frita, feijão, mix de folhas e ovo' },
+    { name: 'A La minuta de Frango', price: 60.00, description: 'Filé de frango grelhado (200g), arroz, batata frita, feijão, mix de folas e ovo' },
     { name: 'Strogonof de Frango', price: 62.00, description: 'Iscas de frango (200g), arroz, batata palha e molho strogonof' }
   ],
   'Sobremesas': [
@@ -224,7 +225,7 @@ const productsData = {
   ]
 }
 
-// 3. Helper to generate slug from name
+// 4. Helper to generate slug from name
 const slugify = (text) => {
   return text
     .toString()
@@ -242,8 +243,8 @@ async function run() {
     let isAuthenticated = false
 
     // Check if key is secret/service_role (bypasses RLS)
-    if (supabaseAnonKey.startsWith('sb_secret_')) {
-      console.log('Chave do tipo SECRET detectada. A inserção ignorará as políticas RLS automaticamente.')
+    if (supabaseAnonKey.startsWith('sb_secret_') || supabaseAnonKey.includes('service_role')) {
+      console.log('Chave do tipo SECRET/SERVICE_ROLE detectada. A inserção ignorará as políticas RLS automaticamente.')
       isAuthenticated = true
     } else {
       console.log('Chave do tipo PUBLISHABLE detectada. Tentando autenticação como administrador...')
@@ -277,7 +278,12 @@ async function run() {
         .maybeSingle()
 
       if (existing) {
-        console.log(`[Categoria] "${cat.name}" já cadastrada. Pulando...`)
+        console.log(`[Categoria] "${cat.name}" já cadastrada. Atualizando display_order...`)
+        const { error: updateError } = await supabase
+          .from('categories')
+          .update({ display_order: cat.order })
+          .eq('id', existing.id)
+        
         categoryMap[cat.name] = existing.id
       } else {
         const { data: created, error: createError } = await supabase
@@ -317,7 +323,15 @@ async function run() {
           .maybeSingle()
 
         if (existing) {
-          console.log(`  [Produto] "${prod.name}" já cadastrado. Pulando...`)
+          console.log(`  [Produto] "${prod.name}" já cadastrado. Atualizando preço e subcategoria...`)
+          await supabase
+            .from('products')
+            .update({
+              price: prod.price,
+              description: prod.description || '',
+              subcategory: prod.subcategory || ''
+            })
+            .eq('id', existing.id)
           continue
         }
 
@@ -328,6 +342,7 @@ async function run() {
             name: prod.name,
             price: prod.price,
             description: prod.description || '',
+            subcategory: prod.subcategory || '',
             available: true,
             display_order: 0
           }])
