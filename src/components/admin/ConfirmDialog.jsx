@@ -49,7 +49,7 @@ export function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={isConfirming}
-            className="px-5 py-2 bg-red-600 hover:bg-red-750 text-white rounded-admin text-sm font-medium transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2"
+            className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-admin text-sm font-medium transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2"
           >
             {isConfirming ? (
               <>

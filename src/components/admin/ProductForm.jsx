@@ -169,7 +169,7 @@ export function ProductForm({
             placeholder="Ex: 89.90"
           />
           {errors.price && (
-            <p className="text-red-650 text-xs mt-1 font-medium">{errors.price.message}</p>
+            <p className="text-red-600 text-xs mt-1 font-medium">{errors.price.message}</p>
           )}
         </div>
 
@@ -191,7 +191,7 @@ export function ProductForm({
             ))}
           </select>
           {errors.category_id && (
-            <p className="text-red-650 text-xs mt-1 font-medium">{errors.category_id.message}</p>
+            <p className="text-red-600 text-xs mt-1 font-medium">{errors.category_id.message}</p>
           )}
         </div>
 
@@ -252,7 +252,7 @@ export function ProductForm({
             />
           )}
           {errors.subcategory && (
-            <p className="text-red-650 text-xs mt-1 font-medium">{errors.subcategory.message}</p>
+            <p className="text-red-600 text-xs mt-1 font-medium">{errors.subcategory.message}</p>
           )}
         </div>
       </div>

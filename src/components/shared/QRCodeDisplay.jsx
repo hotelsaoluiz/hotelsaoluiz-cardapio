@@ -341,7 +341,7 @@ export function QRCodeDisplay() {
             )}
 
             <div className="mt-4 px-2 w-full">
-              <span className="text-[10px] text-slate-350 tracking-wider block">
+              <span className="text-[10px] text-slate-300 tracking-wider block">
                 {activeTab === 'qr' && 'Imagem PNG de 1024x1024px com alta nitidez.'}
                 {activeTab === 'acrylic' && 'Arte diagramada vertical de 10x15cm (800x1200px) para acrílicos.'}
                 {activeTab === 'wall' && 'Placa nobre decorativa de recepção (1200x1600px) para parede.'}
@@ -387,7 +387,7 @@ export function QRCodeDisplay() {
               className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-semibold uppercase tracking-wider transition-colors rounded ${
                 activeTab === 'qr' 
                   ? 'bg-navy hover:bg-navy-mid text-white shadow-sm' 
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-650'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
               }`}
             >
               {isGenerating === 'qr' ? (
@@ -430,7 +430,7 @@ export function QRCodeDisplay() {
               className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-semibold uppercase tracking-wider transition-colors rounded ${
                 activeTab === 'acrylic' 
                   ? 'bg-navy hover:bg-navy-mid text-white shadow-sm' 
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-650'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
               }`}
             >
               {isGenerating === 'acrylic' ? (
@@ -473,7 +473,7 @@ export function QRCodeDisplay() {
               className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-semibold uppercase tracking-wider transition-colors rounded ${
                 activeTab === 'wall' 
                   ? 'bg-navy hover:bg-navy-mid text-white shadow-sm' 
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-650'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
               }`}
             >
               {isGenerating === 'wall' ? (

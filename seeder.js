@@ -172,7 +172,7 @@ const productsData = {
     { name: 'Carreteiro de Filé * Servido na panela de ferro, p/ 1 pessoa', price: 58.00, description: 'Iscas de filé, cebola, tomate, molho de tomate e arroz', subcategory: 'Carnes Vermelhas' },
     
     { name: 'Frango Grelhado', price: 45.00, description: 'Frango grelhado (200g), arroz branco, mix de folhas', subcategory: 'Aves & Frangos' },
-    { name: 'Frango a parmegiana', price: 69.00, description: 'Filé de frango (200g) empanado e frito, arroz, batata frita and mix de folhas', subcategory: 'Aves & Frangos' },
+    { name: 'Frango a parmegiana', price: 69.00, description: 'Filé de frango (200g) empanado e frito, arroz, batata frita e mix de folhas', subcategory: 'Aves & Frangos' },
     { name: 'Frango a milanesa', price: 48.00, description: 'Filé de frango (200g), arroz branco, alface e tomate', subcategory: 'Aves & Frangos' },
     { name: 'A La minuta de Frango', price: 60.00, description: 'Filé de frango grelhado (200g), arroz, batata frita, feijão, mix de folas e ovo', subcategory: 'Aves & Frangos' },
     { name: 'Strogonof de Frango', price: 62.00, description: 'Iscas de frango (200g), arroz, batata palha e molho strogonof', subcategory: 'Aves & Frangos' },

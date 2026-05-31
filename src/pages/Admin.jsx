@@ -530,7 +530,7 @@ export function Admin() {
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-850 hover:bg-slate-800 border border-slate-700 text-white hover:text-gold rounded-admin text-xs font-semibold transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-800 border border-slate-700 text-white hover:text-gold rounded-admin text-xs font-semibold transition-all"
           >
             <Eye className="w-3.5 h-3.5" />
             Visualizar Cardápio
@@ -552,7 +552,7 @@ export function Admin() {
           <button
             onClick={() => setActiveTab('products')}
             className={`w-full text-left px-4 py-3 rounded-admin text-xs uppercase tracking-widest font-semibold flex items-center gap-3 transition-colors ${
-              activeTab === 'products' ? 'bg-navy text-white' : 'bg-white text-slate-650 hover:bg-slate-100 border border-slate-200'
+              activeTab === 'products' ? 'bg-navy text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
             <Utensils className="w-4 h-4" />
@@ -561,7 +561,7 @@ export function Admin() {
           <button
             onClick={() => setActiveTab('categories')}
             className={`w-full text-left px-4 py-3 rounded-admin text-xs uppercase tracking-widest font-semibold flex items-center gap-3 transition-colors ${
-              activeTab === 'categories' ? 'bg-navy text-white' : 'bg-white text-slate-650 hover:bg-slate-100 border border-slate-200'
+              activeTab === 'categories' ? 'bg-navy text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
             <Grid className="w-4 h-4" />
@@ -570,7 +570,7 @@ export function Admin() {
           <button
             onClick={() => setActiveTab('qrcode')}
             className={`w-full text-left px-4 py-3 rounded-admin text-xs uppercase tracking-widest font-semibold flex items-center gap-3 transition-colors ${
-              activeTab === 'qrcode' ? 'bg-navy text-white' : 'bg-white text-slate-650 hover:bg-slate-100 border border-slate-200'
+              activeTab === 'qrcode' ? 'bg-navy text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
             <QrCode className="w-4 h-4" />
@@ -579,7 +579,7 @@ export function Admin() {
           <button
             onClick={() => setActiveTab('users')}
             className={`w-full text-left px-4 py-3 rounded-admin text-xs uppercase tracking-widest font-semibold flex items-center gap-3 transition-colors ${
-              activeTab === 'users' ? 'bg-navy text-white' : 'bg-white text-slate-650 hover:bg-slate-100 border border-slate-200'
+              activeTab === 'users' ? 'bg-navy text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
             <Users className="w-4 h-4" />
@@ -588,7 +588,7 @@ export function Admin() {
           <button
             onClick={() => setActiveTab('storage')}
             className={`w-full text-left px-4 py-3 rounded-admin text-xs uppercase tracking-widest font-semibold flex items-center gap-3 transition-colors ${
-              activeTab === 'storage' ? 'bg-navy text-white' : 'bg-white text-slate-650 hover:bg-slate-100 border border-slate-200'
+              activeTab === 'storage' ? 'bg-navy text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
             <HardDrive className="w-4 h-4" />
@@ -643,7 +643,7 @@ export function Admin() {
                         <th className="py-3.5 px-4 w-24 text-center">Ações</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-150 text-xs">
+                    <tbody className="divide-y divide-slate-200 text-xs">
                       {products.map((prod) => {
                         const cat = categories.find((c) => c.id === prod.category_id)
                         return (
@@ -675,7 +675,7 @@ export function Admin() {
                             <td className="py-3 px-4 text-slate-605 font-medium">
                                {cat ? (
                                  <div className="flex flex-col gap-1 items-start">
-                                   <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] border border-slate-150 font-semibold">
+                                   <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] border border-slate-200 font-semibold">
                                      {cat.name}
                                    </span>
                                    {prod.subcategory && (
@@ -731,7 +731,7 @@ export function Admin() {
                                 </button>
                                 <button
                                   onClick={() => setDeletingProduct(prod)}
-                                  className="p-1.5 text-slate-500 hover:text-red-650 hover:bg-red-50 rounded transition-colors"
+                                  className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                                   title="Excluir prato"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
@@ -769,7 +769,7 @@ export function Admin() {
                     onChange={(e) => setNewCatName(e.target.value)}
                     placeholder="Ex: Entradas Especiais"
                     disabled={isCreatingCategory}
-                    className="w-full px-3 py-2 border border-slate-350 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
                   />
                 </div>
                 <div>
@@ -783,7 +783,7 @@ export function Admin() {
                       onChange={(e) => setNewCatOrder(e.target.value)}
                       placeholder="0"
                       disabled={isCreatingCategory}
-                      className="w-20 px-3 py-2 border border-slate-350 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy text-center"
+                      className="w-20 px-3 py-2 border border-slate-300 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy text-center"
                     />
                     <button
                       type="submit"
@@ -909,7 +909,7 @@ export function Admin() {
                                     </button>
                                   </div>
                                   <span className="flex items-center gap-1">
-                                    <ListOrdered className="w-3.5 h-3.5 text-slate-450" />
+                                    <ListOrdered className="w-3.5 h-3.5 text-slate-400" />
                                     Ordem: {cat.display_order}
                                   </span>
                                 </div>
@@ -924,7 +924,7 @@ export function Admin() {
                                   </button>
                                   <button
                                     onClick={() => setDeletingCategory(cat)}
-                                    className="p-1.5 text-slate-500 hover:text-red-650 hover:bg-red-50 rounded transition-colors"
+                                    className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                                     title="Excluir categoria"
                                   >
                                     <Trash2 className="w-3.5 h-3.5" />
@@ -947,7 +947,7 @@ export function Admin() {
                                 return (
                                   <div
                                     key={sub}
-                                    className="inline-flex items-center gap-2 px-2.5 py-1 bg-slate-50 border border-slate-200 rounded text-[11px] font-medium text-slate-700 hover:border-slate-350 transition-colors"
+                                    className="inline-flex items-center gap-2 px-2.5 py-1 bg-slate-50 border border-slate-200 rounded text-[11px] font-medium text-slate-700 hover:border-slate-300 transition-colors"
                                   >
                                     {isEditingSub ? (
                                       <div className="flex items-center gap-1.5">
@@ -1012,7 +1012,7 @@ export function Admin() {
                                         <button
                                           type="button"
                                           onClick={() => handleDeleteSubcategory(cat.id, sub)}
-                                          className="text-slate-400 hover:text-red-650 hover:bg-red-50 p-0.5 rounded transition-colors"
+                                          className="text-slate-400 hover:text-red-600 hover:bg-red-50 p-0.5 rounded transition-colors"
                                           title="Remover subcategoria"
                                         >
                                           <Trash2 className="w-3.5 h-3.5" />
@@ -1076,7 +1076,7 @@ export function Admin() {
                     onChange={(e) => setNewUserEmail(e.target.value)}
                     placeholder="Ex: proprietario@hotelsaoluiz.com"
                     disabled={isCreatingUser}
-                    className="w-full px-3 py-2 border border-slate-350 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
                   />
                 </div>
 
@@ -1092,7 +1092,7 @@ export function Admin() {
                       onChange={(e) => setNewUserPassword(e.target.value)}
                       placeholder="Mínimo 6 caracteres"
                       disabled={isCreatingUser}
-                      className="w-full px-3 py-2 border border-slate-350 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
                     />
                   </div>
 
@@ -1107,7 +1107,7 @@ export function Admin() {
                       onChange={(e) => setNewUserConfirmPassword(e.target.value)}
                       placeholder="Repita a senha"
                       disabled={isCreatingUser}
-                      className="w-full px-3 py-2 border border-slate-350 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
                     />
                   </div>
                 </div>
@@ -1185,7 +1185,7 @@ export function Admin() {
 
                     {/* Progress Bar showing percentage utilized of 1GB limit */}
                     <div className="space-y-1.5 pt-2">
-                      <div className="flex justify-between text-xs font-semibold text-slate-650">
+                      <div className="flex justify-between text-xs font-semibold text-slate-600">
                         <span>Capacidade de Armazenamento:</span>
                         <span className="font-bold text-navy-dark">
                           {((totalStorageSize / 1073741824) * 100).toFixed(3)}% utilizado
@@ -1197,13 +1197,13 @@ export function Admin() {
                           style={{ width: `${Math.min(100, Math.max(0.3, (totalStorageSize / 1073741824) * 100))}%` }}
                         />
                       </div>
-                      <div className="flex justify-between text-[9px] font-bold text-slate-450 uppercase tracking-wider">
+                      <div className="flex justify-between text-[9px] font-bold text-slate-400 uppercase tracking-wider">
                         <span>0%</span>
                         <span>Limite Recomendado: 1.0 GB</span>
                       </div>
                     </div>
 
-                    <div className="bg-slate-50/50 rounded p-4 text-[11px] text-slate-650 leading-relaxed border border-slate-150">
+                    <div className="bg-slate-50/50 rounded p-4 text-[11px] text-slate-600 leading-relaxed border border-slate-200">
                       <p>
                         ✓ <strong>Otimização Automática Ativa</strong>: Sempre que você insere ou substitui uma imagem no cardápio, 
                         o sistema automaticamente ajusta o tamanho físico (800x600px) e realiza a compressão da foto no seu navegador antes de enviá-la ao servidor. 
@@ -1245,7 +1245,7 @@ export function Admin() {
                           type="button"
                           onClick={handleCleanOrphanedFiles}
                           disabled={isCleaningStorage}
-                          className="flex items-center justify-center gap-1.5 px-4 py-2 bg-red-650 hover:bg-red-755 text-white rounded-admin text-xs uppercase tracking-widest font-semibold shadow-sm transition-colors disabled:opacity-50 flex-shrink-0"
+                          className="flex items-center justify-center gap-1.5 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-admin text-xs uppercase tracking-widest font-semibold shadow-sm transition-colors disabled:opacity-50 flex-shrink-0"
                         >
                           {isCleaningStorage ? (
                             <Loader2 className="w-3.5 h-3.5 animate-spin" />

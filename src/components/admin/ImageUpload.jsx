@@ -170,7 +170,7 @@ export function ImageUpload({ value, onChange, disabled = false }) {
                 <p className="text-sm font-medium text-slate-700">
                   {isDragActive ? 'Solte a imagem aqui' : 'Arraste uma imagem ou clique para selecionar'}
                 </p>
-                <p className="text-xs text-slate-400 mt-1">PNG, JPG ou WEBP até 5MB</p>
+                <p className="text-xs text-slate-400 mt-1">PNG, JPG ou WEBP até 500KB</p>
               </>
             )}
           </div>
