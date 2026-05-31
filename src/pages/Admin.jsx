@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@supabase/supabase-js'
+import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { useProducts } from '../hooks/useProducts'
 import { useCategories } from '../hooks/useCategories'
@@ -24,7 +25,9 @@ import {
   ListOrdered,
   Users,
   Database,
-  HardDrive
+  HardDrive,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react'
 
 // Helper to generate slug from name
@@ -323,6 +326,66 @@ export function Admin() {
       await queryClient.invalidateQueries({ queryKey: ['products'] })
     } catch (err) {
       alert('Erro ao excluir subcategoria: ' + err.message)
+    }
+  }
+
+  // Handle Subcategory Reordering (Bulk update product display_order in a single batch)
+  const handleReorderSubcategories = async (categoryId, subcatList, index, direction) => {
+    const newSubcatList = [...subcatList]
+    const targetIndex = direction === 'up' ? index - 1 : index + 1
+    
+    if (targetIndex < 0 || targetIndex >= newSubcatList.length) return
+    
+    // Swap elements
+    const temp = newSubcatList[index]
+    newSubcatList[index] = newSubcatList[targetIndex]
+    newSubcatList[targetIndex] = temp
+    
+    setIsUpdatingSubcategory(true)
+    try {
+      const catProducts = products.filter((p) => p.category_id === categoryId)
+      const updates = []
+      
+      // Products with no subcategory start at order 0
+      const noSubProducts = catProducts
+        .filter((p) => !p.subcategory)
+        .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+        
+      noSubProducts.forEach((p, idx) => {
+        updates.push({
+          id: p.id,
+          display_order: idx
+        })
+      })
+      
+      // Products for each subcategory sequentially
+      newSubcatList.forEach((subcatName, subcatIdx) => {
+        const subProducts = catProducts
+          .filter((p) => p.subcategory === subcatName)
+          .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+          
+        const baseOrder = (subcatIdx + 1) * 100
+        subProducts.forEach((p, idx) => {
+          updates.push({
+            id: p.id,
+            display_order: baseOrder + idx
+          })
+        })
+      })
+      
+      if (updates.length > 0) {
+        const { error } = await supabase
+          .from('products')
+          .upsert(updates)
+          
+        if (error) throw error
+      }
+      
+      await queryClient.invalidateQueries({ queryKey: ['products'] })
+    } catch (err) {
+      alert('Erro ao reordenar subcategorias: ' + err.message)
+    } finally {
+      setIsUpdatingSubcategory(false)
     }
   }
 
@@ -720,6 +783,11 @@ export function Admin() {
                     const isEditing = editingCategoryId === cat.id
                     const catProducts = products.filter((p) => p.category_id === cat.id)
                     const uniqueSubcats = Array.from(new Set(catProducts.map((p) => p.subcategory).filter(Boolean)))
+                      .sort((a, b) => {
+                        const minA = Math.min(...catProducts.filter((p) => p.subcategory === a).map((p) => p.display_order ?? 0))
+                        const minB = Math.min(...catProducts.filter((p) => p.subcategory === b).map((p) => p.display_order ?? 0))
+                        return minA - minB
+                      })
 
                     return (
                       <div
@@ -817,7 +885,7 @@ export function Admin() {
                               Subcategorias deste grupo:
                             </span>
                             <div className="flex flex-wrap gap-2">
-                              {uniqueSubcats.map((sub) => {
+                              {uniqueSubcats.map((sub, idx) => {
                                 const isEditingSub = editingSubcat && editingSubcat.categoryId === cat.id && editingSubcat.name === sub
                                 return (
                                   <div
@@ -852,6 +920,26 @@ export function Admin() {
                                       </div>
                                     ) : (
                                       <>
+                                        <div className="flex items-center gap-0.5 mr-1 border-r border-slate-200 pr-1.5 flex-shrink-0">
+                                          <button
+                                            type="button"
+                                            onClick={() => handleReorderSubcategories(cat.id, uniqueSubcats, idx, 'up')}
+                                            disabled={idx === 0 || isUpdatingSubcategory}
+                                            className="text-slate-400 hover:text-navy disabled:opacity-30 p-0.5 transition-opacity"
+                                            title="Mover para cima"
+                                          >
+                                            <ArrowUp className="w-3 h-3" />
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleReorderSubcategories(cat.id, uniqueSubcats, idx, 'down')}
+                                            disabled={idx === uniqueSubcats.length - 1 || isUpdatingSubcategory}
+                                            className="text-slate-400 hover:text-navy disabled:opacity-30 p-0.5 transition-opacity"
+                                            title="Mover para baixo"
+                                          >
+                                            <ArrowDown className="w-3 h-3" />
+                                          </button>
+                                        </div>
                                         <span>{sub}</span>
                                         <button
                                           type="button"

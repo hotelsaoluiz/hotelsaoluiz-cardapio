@@ -31,7 +31,11 @@ export function Menu() {
   const activeProducts = getActiveProductsOfSelectedCategory()
   const activeSubcategories = Array.from(
     new Set(activeProducts.map((p) => p.subcategory).filter(Boolean))
-  )
+  ).sort((a, b) => {
+    const minA = Math.min(...activeProducts.filter((p) => p.subcategory === a).map((p) => p.display_order ?? 0))
+    const minB = Math.min(...activeProducts.filter((p) => p.subcategory === b).map((p) => p.display_order ?? 0))
+    return minA - minB
+  })
 
   const handleSelectCategory = (categoryId) => {
     setActiveCategoryId(categoryId)
@@ -207,7 +211,13 @@ export function Menu() {
           /* Category Sections and Product Cards */
           categories.map((category) => {
             const grouped = getGroupedProductsByCategory(category.id)
-            const subKeys = Object.keys(grouped)
+            const subKeys = Object.keys(grouped).sort((a, b) => {
+              if (a === 'Outros') return 1
+              if (b === 'Outros') return -1
+              const minA = Math.min(...grouped[a].map((p) => p.display_order ?? 0))
+              const minB = Math.min(...grouped[b].map((p) => p.display_order ?? 0))
+              return minA - minB
+            })
             if (subKeys.length === 0) return null
 
             return (
