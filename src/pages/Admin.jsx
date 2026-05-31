@@ -353,7 +353,7 @@ export function Admin() {
         
       noSubProducts.forEach((p, idx) => {
         updates.push({
-          id: p.id,
+          ...p,
           display_order: idx
         })
       })
@@ -367,7 +367,7 @@ export function Admin() {
         const baseOrder = (subcatIdx + 1) * 100
         subProducts.forEach((p, idx) => {
           updates.push({
-            id: p.id,
+            ...p,
             display_order: baseOrder + idx
           })
         })
