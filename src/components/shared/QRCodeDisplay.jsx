@@ -2,7 +2,7 @@ import React from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
 
 export function QRCodeDisplay() {
-  const menuUrl = import.meta.env.VITE_MENU_URL || window.location.origin
+  const menuUrl = window.location.origin
   const hotelName = import.meta.env.VITE_HOTEL_NAME || 'Hotel São Luiz'
 
   const downloadQRCode = () => {
@@ -62,7 +62,8 @@ export function QRCodeDisplay() {
         <QRCodeCanvas
           id="menu-qr-code"
           value={menuUrl}
-          size={200}
+          size={1024}
+          style={{ width: '200px', height: '200px' }}
           bgColor="#FFFFFF"
           fgColor="#1E2A7A"
           level="H"
