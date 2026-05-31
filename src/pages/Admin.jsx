@@ -1283,6 +1283,7 @@ export function Admin() {
             <ProductForm
               initialData={editingProduct}
               categories={categories}
+              products={products}
               onSubmit={handleProductSubmit}
               onCancel={() => setIsProductModalOpen(false)}
               isSaving={isProductSaving}

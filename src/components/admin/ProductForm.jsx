@@ -22,6 +22,7 @@ const schema = z.object({
 export function ProductForm({
   initialData = null,
   categories = [],
+  products = [],
   onSubmit,
   onCancel,
   isSaving = false,
@@ -32,6 +33,7 @@ export function ProductForm({
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
@@ -44,6 +46,14 @@ export function ProductForm({
       available: initialData?.available !== undefined ? initialData.available : true,
     },
   })
+
+  const selectedCategoryId = watch('category_id')
+
+  const existingSubcategories = React.useMemo(() => {
+    if (!selectedCategoryId) return []
+    const catProducts = products.filter((p) => p.category_id === selectedCategoryId)
+    return Array.from(new Set(catProducts.map((p) => p.subcategory).filter(Boolean))).sort()
+  }, [selectedCategoryId, products])
 
   // Synchronize dynamic updates to initial data
   useEffect(() => {
@@ -152,11 +162,18 @@ export function ProductForm({
           </label>
           <input
             type="text"
+            list="existing-subcategories-list"
             {...register('subcategory')}
             disabled={isSaving}
             className="w-full px-3 py-2 border border-slate-300 rounded-admin focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy text-sm transition-all"
             placeholder="Ex: Vinhos, Pizzas"
+            autoComplete="off"
           />
+          <datalist id="existing-subcategories-list">
+            {existingSubcategories.map((sub) => (
+              <option key={sub} value={sub} />
+            ))}
+          </datalist>
           {errors.subcategory && (
             <p className="text-red-650 text-xs mt-1 font-medium">{errors.subcategory.message}</p>
           )}
