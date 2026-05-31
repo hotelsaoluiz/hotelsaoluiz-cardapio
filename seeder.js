@@ -36,14 +36,16 @@ if (!supabaseUrl || !supabaseAnonKey) {
 console.log('Iniciando conexão com o Supabase:', supabaseUrl)
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// 2. Beautifully Consolidated 6 Macro-Categories (instead of 16)
+// 2. Beautifully Consolidated 8 Macro-Categories (instead of 6)
 const categoriesData = [
   { name: 'Bebidas & Vinhos', order: 1 },
   { name: 'Entradas & Petiscos', order: 2 },
-  { name: 'Carnes & Grelhados', order: 3 },
-  { name: 'Massas & Risotos', order: 4 },
-  { name: 'Lanches & Pizzas', order: 5 },
-  { name: 'Sobremesas', order: 6 }
+  { name: 'Saladas', order: 3 },
+  { name: 'Peixes', order: 4 },
+  { name: 'Carnes & Grelhados', order: 5 },
+  { name: 'Massas & Risotos', order: 6 },
+  { name: 'Lanches & Pizzas', order: 7 },
+  { name: 'Sobremesas', order: 8 }
 ]
 
 // 3. Consolidated Products Mapping with clean subcategories
@@ -137,11 +139,25 @@ const productsData = {
     
     { name: 'Canja * Servido na sopeira, p/1 pessoa', price: 27.00, description: 'Arroz, frango, cenoura e batata', subcategory: 'Sopas & Caldos' },
     { name: 'Sopa de Capeletti * Servido na sopeira, p/1 pessoa', price: 33.00, description: 'Carne ou frango', subcategory: 'Sopas & Caldos' },
-    { name: 'Sopa de Capeletti * Servido na sopeira, p/2 pessoas', price: 60.00, description: 'Carne ou frango', subcategory: 'Sopas & Caldos' },
+    { name: 'Sopa de Capeletti * Servido na sopeira, p/2 pessoas', price: 60.00, description: 'Carne ou frango', subcategory: 'Sopas & Caldos' }
+  ],
+  'Saladas': [
+    { name: 'Mix de folhas * Empratado, porção p/1 pessoa', price: 19.00, description: 'Alface, rúcula, tomate e cebola roxa' },
+    { name: 'Salada Ceasar * Empratado, porção p/1 pessoa', price: 33.00, description: 'Frango grelhado, alface americana, uva passa, molho e crótons' },
+    { name: 'Salpicão * Empratado, porção p/1 pessoa', price: 22.00, description: 'Frango desfiado, maionese, cenoura ralada, pimentões picados, batata palha, presunto e queijo' }
+  ],
+  'Peixes': [
+    { name: 'Salmão ao molho mostarda', price: 104.00, description: 'Salmão grelhado no azeite de oliva, acompanhado de molho de mostarda, mel e nata; batata elegante (com molho branco e queijo ralado gratinado) e arroz', subcategory: 'Salmão' },
+    { name: 'Salmão ao molho maracujá', price: 92.00, description: 'Salmão grelhado com molho de maracujá, arroz e gratinado de batatas', subcategory: 'Salmão' },
+    { name: 'Salmão ao molho alcaparras', price: 116.00, description: 'Salmão grelhado, molho com alcaparras (molho branco com alcaparras), champignon, batata souté e arroz', subcategory: 'Salmão' },
     
-    { name: 'Mix de folhas * Empratado, porção p/1 pessoa', price: 19.00, description: 'Alface, rúcula, tomate e cebola roxa', subcategory: 'Saladas Frescas' },
-    { name: 'Salada Ceasar * Empratado, porção p/1 pessoa', price: 33.00, description: 'Frango grelhado, alface americana, uva passa, molho e crótons', subcategory: 'Saladas Frescas' },
-    { name: 'Salpicão * Empratado, porção p/1 pessoa', price: 22.00, description: 'Frango desfiado, maionese, cenoura ralada, pimentões picados, batata palha, presunto e queijo', subcategory: 'Saladas Frescas' }
+    { name: 'Tilápia a São Luiz', price: 72.00, description: 'Filé de tilápia a milanesa, cenoura, cebola, brócolis grelhados e arroz', subcategory: 'Tilápia' },
+    { name: 'Tilápia a siciliana', price: 65.00, description: 'Filé de tilápia grelhado crisp de cebola (cebola meia lua frita), arroz e batata chips', subcategory: 'Tilápia' },
+    
+    { name: 'Traíra a São Luiz', price: 87.00, description: 'Filé de traíra a milanesa acompanhada de legumes cozidos, ovos e arroz.', subcategory: 'Traíra' },
+    { name: 'Traíra a siciliana', price: 76.00, description: 'Filé de traíra frita, crisp de cebola (cebola meia lua frita), batata chips, molho com limão e arroz', subcategory: 'Traíra' },
+    { name: 'Traíra ao molho escabeche', price: 73.00, description: 'Filé de traíra frita, arroz e molho ao escabeche (tomate e cebola)', subcategory: 'Traíra' },
+    { name: 'Traíra ao molho de camarão', price: 113.00, description: 'Filé de traíra frita, de molho de camarão e arroz', subcategory: 'Traíra' }
   ],
   'Carnes & Grelhados': [
     { name: 'Filé Acebolado', price: 65.00, description: 'Medalhões de filé (200g) com cebola grelhada, arroz, batata frita mix de folhas e ovo', subcategory: 'Carnes Vermelhas' },
@@ -156,20 +172,10 @@ const productsData = {
     { name: 'Carreteiro de Filé * Servido na panela de ferro, p/ 1 pessoa', price: 58.00, description: 'Iscas de filé, cebola, tomate, molho de tomate e arroz', subcategory: 'Carnes Vermelhas' },
     
     { name: 'Frango Grelhado', price: 45.00, description: 'Frango grelhado (200g), arroz branco, mix de folhas', subcategory: 'Aves & Frangos' },
-    { name: 'Frango a parmegiana', price: 69.00, description: 'Filé de frango (200g) empanado e frito, arroz, batata frita e mix de folhas', subcategory: 'Aves & Frangos' },
+    { name: 'Frango a parmegiana', price: 69.00, description: 'Filé de frango (200g) empanado e frito, arroz, batata frita and mix de folhas', subcategory: 'Aves & Frangos' },
     { name: 'Frango a milanesa', price: 48.00, description: 'Filé de frango (200g), arroz branco, alface e tomate', subcategory: 'Aves & Frangos' },
     { name: 'A La minuta de Frango', price: 60.00, description: 'Filé de frango grelhado (200g), arroz, batata frita, feijão, mix de folas e ovo', subcategory: 'Aves & Frangos' },
     { name: 'Strogonof de Frango', price: 62.00, description: 'Iscas de frango (200g), arroz, batata palha e molho strogonof', subcategory: 'Aves & Frangos' },
-    
-    { name: 'Salmão ao molho mostarda', price: 104.00, description: 'Salmão grelhado no azeite de oliva, acompanhado de molho de mostarda, mel e nata; batata elegante (com molho branco e queijo ralado gratinado) e arroz', subcategory: 'Peixes & Frutos do Mar' },
-    { name: 'Salmão ao molho maracujá', price: 92.00, description: 'Salmão grelhado com molho de maracujá, arroz e gratinado de batatas', subcategory: 'Peixes & Frutos do Mar' },
-    { name: 'Salmão ao molho alcaparras', price: 116.00, description: 'Salmão grelhado, molho com alcaparras (molho branco com alcaparras), champignon, batata souté e arroz', subcategory: 'Peixes & Frutos do Mar' },
-    { name: 'Tilápia a São Luiz', price: 72.00, description: 'Filé de tilápia a milanesa, cenoura, cebola, brócolis grelhados e arroz', subcategory: 'Peixes & Frutos do Mar' },
-    { name: 'Tilápia a siciliana', price: 65.00, description: 'Filé de tilápia grelhado crisp de cebola (cebola meia lua frita), arroz e batata chips', subcategory: 'Peixes & Frutos do Mar' },
-    { name: 'Traíra a São Luiz', price: 87.00, description: 'Filé de traíra a milanesa acompanhada de legumes cozidos, ovos e arroz.', subcategory: 'Peixes & Frutos do Mar' },
-    { name: 'Traíra a siciliana', price: 76.00, description: 'Filé de traíra frita, crisp de cebola (cebola meia lua frita), batata chips, molho com limão e arroz', subcategory: 'Peixes & Frutos do Mar' },
-    { name: 'Traíra ao molho escabeche', price: 73.00, description: 'Filé de traíra frita, arroz e molho ao escabeche (tomate e cebola)', subcategory: 'Peixes & Frutos do Mar' },
-    { name: 'Traíra ao molho de camarão', price: 113.00, description: 'Filé de traíra frita, de molho de camarão e arroz', subcategory: 'Peixes & Frutos do Mar' },
     
     { name: 'Omeletes de legumes', price: 27.00, subcategory: 'Omeletes' },
     { name: 'Omelete de presunto e queijo', price: 31.00, subcategory: 'Omeletes' },
