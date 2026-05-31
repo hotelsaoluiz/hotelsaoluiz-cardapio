@@ -9,6 +9,7 @@ import { QRCodeDisplay } from '../components/shared/QRCodeDisplay'
 import { ProductForm } from '../components/admin/ProductForm'
 import { ConfirmDialog } from '../components/admin/ConfirmDialog'
 import HotelLogo from '../components/menu/HotelLogo'
+import { Link } from 'react-router-dom'
 import { 
   LogOut, 
   Plus, 
@@ -510,7 +511,7 @@ export function Admin() {
     <div className="min-h-screen bg-slate-50 flex flex-col font-ui text-slate-800">
       {/* Top Navbar */}
       <header className="bg-navy-dark text-white px-6 py-4 flex justify-between items-center shadow-md">
-        <div className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
           <div className="p-0.5 border border-gold rounded-full bg-navy-dark">
             <HotelLogo size={42} borderColor="var(--gold)" />
           </div>
@@ -522,7 +523,7 @@ export function Admin() {
               Restaurante Don Fernando
             </p>
           </div>
-        </div>
+        </Link>
 
         <div className="flex items-center gap-4">
           <a
