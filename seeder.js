@@ -36,192 +36,177 @@ if (!supabaseUrl || !supabaseAnonKey) {
 console.log('Iniciando conexão com o Supabase:', supabaseUrl)
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// 2. Full 16 Categories matching design specs
+// 2. Beautifully Consolidated 6 Macro-Categories (instead of 16)
 const categoriesData = [
-  { name: 'Bebidas', order: 1 },
-  { name: 'Uísque', order: 2 },
-  { name: 'Espumante', order: 3 },
-  { name: 'Carta de Vinhos', order: 4 },
-  { name: 'Entradas', order: 5 },
-  { name: 'Porções', order: 6 },
-  { name: 'Lanches', order: 7 },
-  { name: 'Sopas', order: 8 },
-  { name: 'Saladas', order: 9 },
-  { name: 'Omeletes', order: 10 },
-  { name: 'Risotos', order: 11 },
-  { name: 'Peixes e Frutos do Mar', order: 12 },
-  { name: 'Carnes', order: 13 },
-  { name: 'Massas', order: 14 },
-  { name: 'Frango', order: 15 },
-  { name: 'Sobremesas', order: 16 }
+  { name: 'Bebidas & Vinhos', order: 1 },
+  { name: 'Entradas & Petiscos', order: 2 },
+  { name: 'Carnes & Grelhados', order: 3 },
+  { name: 'Massas & Risotos', order: 4 },
+  { name: 'Lanches & Pizzas', order: 5 },
+  { name: 'Sobremesas', order: 6 }
 ]
 
-// 3. Perfect Products Mapping matching user inputs and detailed subcategories
+// 3. Consolidated Products Mapping with clean subcategories
 const productsData = {
-  'Bebidas': [
-    { name: 'Água mineral (com ou sem gás)', price: 5.00 },
-    { name: 'Refrigerante (lata 350ml)', price: 7.00 },
-    { name: 'Cerveja (Budwaiser, Spaten e Original 600ml)', price: 19.00 },
-    { name: 'Cerveja (Skol 600ml)', price: 17.00 },
-    { name: 'Cerveja preta (Brahma Malzebier lata 350ml)', price: 10.00 },
-    { name: 'Cerveja Heineken Long Neck', price: 14.00 },
-    { name: 'H2O (limão copo 400ml)', price: 8.00 },
-    { name: 'Suco Natural (laranja ou abacaxi copo 400ml)', price: 12.00 },
-    { name: 'Suco de Limão (copo 400ml)', price: 8.00 },
-    { name: 'Caipira Morango', price: 26.00 },
-    { name: 'Caipira Vodka', price: 25.00 },
-    { name: 'Caipira Velho Barreiro', price: 20.00 },
-    { name: 'Caipira Absolute', price: 30.00 },
-    { name: 'Martini', price: 10.00 },
-    { name: 'Campari', price: 10.00 },
-    { name: 'Rum', price: 10.00 },
-    { name: 'Vodca', price: 10.00 },
-    { name: 'Gin', price: 10.00 },
-    { name: 'Underberg', price: 10.00 },
-    { name: 'Aperol Spritz (Aperol c/ espumante)', price: 35.00 }
+  'Bebidas & Vinhos': [
+    { name: 'Água mineral (com ou sem gás)', price: 5.00, subcategory: 'Refrigerantes, Águas & Sucos' },
+    { name: 'Refrigerante (lata 350ml)', price: 7.00, subcategory: 'Refrigerantes, Águas & Sucos' },
+    { name: 'H2O (limão copo 400ml)', price: 8.00, subcategory: 'Refrigerantes, Águas & Sucos' },
+    { name: 'Suco Natural (laranja ou abacaxi copo 400ml)', price: 12.00, subcategory: 'Refrigerantes, Águas & Sucos' },
+    { name: 'Suco de Limão (copo 400ml)', price: 8.00, subcategory: 'Refrigerantes, Águas & Sucos' },
+    
+    { name: 'Cerveja (Budwaiser, Spaten e Original 600ml)', price: 19.00, subcategory: 'Cervejas' },
+    { name: 'Cerveja (Skol 600ml)', price: 17.00, subcategory: 'Cervejas' },
+    { name: 'Cerveja preta (Brahma Malzebier lata 350ml)', price: 10.00, subcategory: 'Cervejas' },
+    { name: 'Cerveja Heineken Long Neck', price: 14.00, subcategory: 'Cervejas' },
+    
+    { name: 'Caipira Morango', price: 26.00, subcategory: 'Coquetéis & Doses' },
+    { name: 'Caipira Vodka', price: 25.00, subcategory: 'Coquetéis & Doses' },
+    { name: 'Caipira Velho Barreiro', price: 20.00, subcategory: 'Coquetéis & Doses' },
+    { name: 'Caipira Absolute', price: 30.00, subcategory: 'Coquetéis & Doses' },
+    { name: 'Martini', price: 10.00, subcategory: 'Coquetéis & Doses' },
+    { name: 'Campari', price: 10.00, subcategory: 'Coquetéis & Doses' },
+    { name: 'Rum', price: 10.00, subcategory: 'Coquetéis & Doses' },
+    { name: 'Vodca', price: 10.00, subcategory: 'Coquetéis & Doses' },
+    { name: 'Gin', price: 10.00, subcategory: 'Coquetéis & Doses' },
+    { name: 'Underberg', price: 10.00, subcategory: 'Coquetéis & Doses' },
+    { name: 'Aperol Spritz (Aperol c/ espumante)', price: 35.00, subcategory: 'Coquetéis & Doses' },
+    
+    { name: 'Chivas (12 anos)', price: 20.00, subcategory: 'Uísques' },
+    { name: 'Logan (12 anos)', price: 18.00, subcategory: 'Uísques' },
+    { name: 'Johnnie Walker', price: 19.00, subcategory: 'Uísques' },
+    { name: 'Old Eight', price: 10.00, subcategory: 'Uísques' },
+    
+    { name: 'Freixenet (semi sec)', price: 109.00, subcategory: 'Espumantes' },
+    { name: 'Freixenet Mia', price: 89.00, subcategory: 'Espumantes' },
+    { name: 'Freixenet Gordon negro Brut', price: 109.00, subcategory: 'Espumantes' },
+    { name: 'Chandon Extra Brut', price: 130.00, subcategory: 'Espumantes' },
+    
+    { name: '8 KM Cabernet Souvignon', price: 58.00, subcategory: 'Vinhos Importados' },
+    { name: 'Casillero Del Diablo Cabernet', price: 109.00, subcategory: 'Vinhos Importados' },
+    { name: 'Casillero Del Diablo Sauvignon Blanc', price: 109.00, subcategory: 'Vinhos Importados' },
+    { name: 'Casillero Del Diablo Carmeniere', price: 109.00, subcategory: 'Vinhos Importados' },
+    { name: 'Casillero Del Diablo Chardonay', price: 109.00, subcategory: 'Vinhos Importados' },
+    { name: 'Gato Negro Cabernet Sauvignon', price: 89.00, subcategory: 'Vinhos Importados' },
+    { name: 'Gato Negro Merlot', price: 89.00, subcategory: 'Vinhos Importados' },
+    { name: 'Reservado Concha Y Toro Cabernet Sauvignon', price: 89.00, subcategory: 'Vinhos Importados' },
+    { name: 'Reservado Concha Y Toro Sauvignon Blanco', price: 89.00, subcategory: 'Vinhos Importados' },
+    
+    { name: 'Don Laurindo Cabernet Sauvignon', price: 104.00, subcategory: 'Vinhos Nacionais' },
+    { name: 'Don Laurindo Merlot', price: 118.00, subcategory: 'Vinhos Nacionais' },
+    { name: 'Don Laurindo Tannat', price: 120.00, subcategory: 'Vinhos Nacionais' },
+    { name: 'Don Laurindo Malbec', price: 115.00, subcategory: 'Vinhos Nacionais' },
+    { name: 'Don Pedrito Cabernet Sauvignon', price: 95.00, subcategory: 'Vinhos Nacionais' },
+    { name: 'Don Pedrito Malbec', price: 99.00, subcategory: 'Vinhos Nacionais' },
+    { name: 'Don Pedrito Merlot', price: 99.00, subcategory: 'Vinhos Nacionais' },
+    { name: 'Taça de Vinho Tinto Seco Colonial (300ml)', price: 18.00, subcategory: 'Vinhos Nacionais' },
+    { name: 'Taça de Vinho Tinto Suave Colonial (300ml)', price: 18.00, subcategory: 'Vinhos Nacionais' },
+    
+    { name: 'Rutini Malbec', price: 279.00, subcategory: 'Vinhos Argentinos' },
+    { name: 'DV Catena Malbec', price: 199.00, subcategory: 'Vinhos Argentinos' },
+    { name: 'DV Catena Cabernet Malbec', price: 179.00, subcategory: 'Vinhos Argentinos' },
+    { name: 'Angelica Zapata Cabernet', price: 269.00, subcategory: 'Vinhos Argentinos' },
+    { name: 'Angelica Zapata Malbec', price: 279.00, subcategory: 'Vinhos Argentinos' },
+    { name: 'Cordero com Piel de Lobo Malbec', price: 79.00, subcategory: 'Vinhos Argentinos' },
+    { name: 'Cordero del Lobo Chardonay', price: 79.00, subcategory: 'Vinhos Argentinos' },
+    { name: 'Cordero Rose Malbec', price: 79.00, subcategory: 'Vinhos Argentinos' },
+    { name: 'Perro Callejero Malbec', price: 109.00, subcategory: 'Vinhos Argentinos' },
+    { name: 'La Linda Chardonay', price: 109.00, subcategory: 'Vinhos Argentinos' },
+    { name: 'La Linda Rose Malbec', price: 109.00, subcategory: 'Vinhos Argentinos' },
+    { name: 'Latitude 33 Malbec', price: 109.00, subcategory: 'Vinhos Argentinos' }
   ],
-  'Uísque': [
-    { name: 'Chivas (12 anos)', price: 20.00, subcategory: 'Importados' },
-    { name: 'Logan (12 anos)', price: 18.00, subcategory: 'Importados' },
-    { name: 'Johnnie Walker', price: 19.00, subcategory: 'Importados' },
-    { name: 'Old Eight', price: 10.00, subcategory: 'Nacionais' }
+  'Entradas & Petiscos': [
+    { name: 'Pastéis Presunto e Queijo (6 unidades)', price: 9.00, subcategory: 'Pastéis & Bolinhos' },
+    { name: 'Pastéis carne (6 unidades)', price: 16.00, subcategory: 'Pastéis & Bolinhos' },
+    { name: 'Pastéis camarão (6 unidades)', price: 22.00, subcategory: 'Pastéis & Bolinhos' },
+    { name: 'Bolinho de Peixe (5 unidades)', price: 9.50, subcategory: 'Pastéis & Bolinhos' },
+    { name: 'Bolinho de Bacalhau (6 unidades)', price: 32.00, subcategory: 'Pastéis & Bolinhos' },
+    { name: 'Camarão a Milanesa', price: 89.00, subcategory: 'Pastéis & Bolinhos' },
+    { name: 'Iscas de Peixe a Milanesa', price: 50.00, description: '350g de iscas de peixe a milanesa', subcategory: 'Pastéis & Bolinhos' },
+    { name: 'Tilápia a Milanesa', price: 40.00, description: '350g de iscas de peixe a milanesa', subcategory: 'Pastéis & Bolinhos' },
+    
+    { name: 'Picadinho de Filé', price: 45.00, subcategory: 'Porções & Acompanhamentos' },
+    { name: 'Iscas de Frango a Milanesa', price: 30.00, description: '250g de iscas de frango a milanesa', subcategory: 'Porções & Acompanhamentos' },
+    { name: 'Tábua de Frios', price: 50.00, description: 'Queijo, presunto, pepino, azeitona e salame', subcategory: 'Porções & Acompanhamentos' },
+    { name: 'Batata Frita', price: 30.00, description: '300g de batata palito', subcategory: 'Porções & Acompanhamentos' },
+    { name: 'Batata Frita c/ chedder e bacon', price: 55.00, description: 'Batata palito, bacon e queijo chedder', subcategory: 'Porções & Acompanhamentos' },
+    { name: 'Arroz', price: 13.00, subcategory: 'Porções & Acompanhamentos' },
+    { name: 'Feijão', price: 13.00, subcategory: 'Porções & Acompanhamentos' },
+    { name: 'Ovo', price: 4.00, subcategory: 'Porções & Acompanhamentos' },
+    { name: 'Batata frita (adicional)', price: 5.00, subcategory: 'Porções & Acompanhamentos' },
+    
+    { name: 'Canja * Servido na sopeira, p/1 pessoa', price: 27.00, description: 'Arroz, frango, cenoura e batata', subcategory: 'Sopas & Caldos' },
+    { name: 'Sopa de Capeletti * Servido na sopeira, p/1 pessoa', price: 33.00, description: 'Carne ou frango', subcategory: 'Sopas & Caldos' },
+    { name: 'Sopa de Capeletti * Servido na sopeira, p/2 pessoas', price: 60.00, description: 'Carne ou frango', subcategory: 'Sopas & Caldos' },
+    
+    { name: 'Mix de folhas * Empratado, porção p/1 pessoa', price: 19.00, description: 'Alface, rúcula, tomate e cebola roxa', subcategory: 'Saladas Frescas' },
+    { name: 'Salada Ceasar * Empratado, porção p/1 pessoa', price: 33.00, description: 'Frango grelhado, alface americana, uva passa, molho e crótons', subcategory: 'Saladas Frescas' },
+    { name: 'Salpicão * Empratado, porção p/1 pessoa', price: 22.00, description: 'Frango desfiado, maionese, cenoura ralada, pimentões picados, batata palha, presunto e queijo', subcategory: 'Saladas Frescas' }
   ],
-  'Espumante': [
-    { name: 'Freixenet (semi sec)', price: 109.00 },
-    { name: 'Freixenet Mia', price: 89.00 },
-    { name: 'Freixenet Gordon negro Brut', price: 109.00 },
-    { name: 'Chandon Extra Brut', price: 130.00 }
+  'Carnes & Grelhados': [
+    { name: 'Filé Acebolado', price: 65.00, description: 'Medalhões de filé (200g) com cebola grelhada, arroz, batata frita mix de folhas e ovo', subcategory: 'Carnes Vermelhas' },
+    { name: 'Filé Grelhado', price: 58.00, description: 'Arroz, filé grelhado (200g), alface e tomate', subcategory: 'Carnes Vermelhas' },
+    { name: 'Filé a Milanesa', price: 68.00, description: 'Filé a milanesa (200g), arroz, batata frita, mix de folhas e ovo', subcategory: 'Carnes Vermelhas' },
+    { name: 'Filé a Parmegiana', price: 87.00, description: 'Filé empanado (200g), presunto, molho de tomate, queijo gratinado, arroz, batata frita', subcategory: 'Carnes Vermelhas' },
+    { name: 'Tornedos de Filé', price: 85.00, description: 'Medalhões de filé (200g) envolto com tiras de bacon ao molho de vinho, arroz, batata frita', subcategory: 'Carnes Vermelhas' },
+    { name: 'Medalhões de Filé', price: 77.00, description: 'Medalhões de filé (200g) envolto com tiras de bacon, arroz, batata frita', subcategory: 'Carnes Vermelhas' },
+    { name: 'A La Minuta de Filé', price: 78.00, description: 'Filé grelhado (200g), arroz, feijão, batata frita, mix de folhas e ovo', subcategory: 'Carnes Vermelhas' },
+    { name: 'Estrogonof de Filé', price: 81.00, description: 'Iscas de filé grelhado (250g), molho de strogonof, arroz e batata palha', subcategory: 'Carnes Vermelhas' },
+    { name: 'Carreteiro de Charque * Servido na panela de ferro, p/ 1 pessoa', price: 55.00, description: 'Charque receita tradicional de carreteiro de charque.', subcategory: 'Carnes Vermelhas' },
+    { name: 'Carreteiro de Filé * Servido na panela de ferro, p/ 1 pessoa', price: 58.00, description: 'Iscas de filé, cebola, tomate, molho de tomate e arroz', subcategory: 'Carnes Vermelhas' },
+    
+    { name: 'Frango Grelhado', price: 45.00, description: 'Frango grelhado (200g), arroz branco, mix de folhas', subcategory: 'Aves & Frangos' },
+    { name: 'Frango a parmegiana', price: 69.00, description: 'Filé de frango (200g) empanado e frito, arroz, batata frita e mix de folhas', subcategory: 'Aves & Frangos' },
+    { name: 'Frango a milanesa', price: 48.00, description: 'Filé de frango (200g), arroz branco, alface e tomate', subcategory: 'Aves & Frangos' },
+    { name: 'A La minuta de Frango', price: 60.00, description: 'Filé de frango grelhado (200g), arroz, batata frita, feijão, mix de folas e ovo', subcategory: 'Aves & Frangos' },
+    { name: 'Strogonof de Frango', price: 62.00, description: 'Iscas de frango (200g), arroz, batata palha e molho strogonof', subcategory: 'Aves & Frangos' },
+    
+    { name: 'Salmão ao molho mostarda', price: 104.00, description: 'Salmão grelhado no azeite de oliva, acompanhado de molho de mostarda, mel e nata; batata elegante (com molho branco e queijo ralado gratinado) e arroz', subcategory: 'Peixes & Frutos do Mar' },
+    { name: 'Salmão ao molho maracujá', price: 92.00, description: 'Salmão grelhado com molho de maracujá, arroz e gratinado de batatas', subcategory: 'Peixes & Frutos do Mar' },
+    { name: 'Salmão ao molho alcaparras', price: 116.00, description: 'Salmão grelhado, molho com alcaparras (molho branco com alcaparras), champignon, batata souté e arroz', subcategory: 'Peixes & Frutos do Mar' },
+    { name: 'Tilápia a São Luiz', price: 72.00, description: 'Filé de tilápia a milanesa, cenoura, cebola, brócolis grelhados e arroz', subcategory: 'Peixes & Frutos do Mar' },
+    { name: 'Tilápia a siciliana', price: 65.00, description: 'Filé de tilápia grelhado crisp de cebola (cebola meia lua frita), arroz e batata chips', subcategory: 'Peixes & Frutos do Mar' },
+    { name: 'Traíra a São Luiz', price: 87.00, description: 'Filé de traíra a milanesa acompanhada de legumes cozidos, ovos e arroz.', subcategory: 'Peixes & Frutos do Mar' },
+    { name: 'Traíra a siciliana', price: 76.00, description: 'Filé de traíra frita, crisp de cebola (cebola meia lua frita), batata chips, molho com limão e arroz', subcategory: 'Peixes & Frutos do Mar' },
+    { name: 'Traíra ao molho escabeche', price: 73.00, description: 'Filé de traíra frita, arroz e molho ao escabeche (tomate e cebola)', subcategory: 'Peixes & Frutos do Mar' },
+    { name: 'Traíra ao molho de camarão', price: 113.00, description: 'Filé de traíra frita, de molho de camarão e arroz', subcategory: 'Peixes & Frutos do Mar' },
+    
+    { name: 'Omeletes de legumes', price: 27.00, subcategory: 'Omeletes' },
+    { name: 'Omelete de presunto e queijo', price: 31.00, subcategory: 'Omeletes' },
+    { name: 'Omelete de presunto, queijo e salaminho', price: 35.00, subcategory: 'Omeletes' }
   ],
-  'Carta de Vinhos': [
-    { name: '8 KM Cabernet Souvignon', price: 58.00, subcategory: 'Importados' },
-    { name: 'Casillero Del Diablo Cabernet', price: 109.00, subcategory: 'Importados' },
-    { name: 'Casillero Del Diablo Sauvignon Blanc', price: 109.00, subcategory: 'Importados' },
-    { name: 'Casillero Del Diablo Carmeniere', price: 109.00, subcategory: 'Importados' },
-    { name: 'Casillero Del Diablo Chardonay', price: 109.00, subcategory: 'Importados' },
-    { name: 'Gato Negro Cabernet Sauvignon', price: 89.00, subcategory: 'Importados' },
-    { name: 'Gato Negro Merlot', price: 89.00, subcategory: 'Importados' },
-    { name: 'Reservado Concha Y Toro Cabernet Sauvignon', price: 89.00, subcategory: 'Importados' },
-    { name: 'Reservado Concha Y Toro Sauvignon Blanco', price: 89.00, subcategory: 'Importados' },
-    { name: 'Don Laurindo Cabernet Sauvignon', price: 104.00, subcategory: 'Nacionais' },
-    { name: 'Don Laurindo Merlot', price: 118.00, subcategory: 'Nacionais' },
-    { name: 'Don Laurindo Tannat', price: 120.00, subcategory: 'Nacionais' },
-    { name: 'Don Laurindo Malbec', price: 115.00, subcategory: 'Nacionais' },
-    { name: 'Don Pedrito Cabernet Sauvignon', price: 95.00, subcategory: 'Nacionais' },
-    { name: 'Don Pedrito Malbec', price: 99.00, subcategory: 'Nacionais' },
-    { name: 'Don Pedrito Merlot', price: 99.00, subcategory: 'Nacionais' },
-    { name: 'Taça de Vinho Tinto Seco Colonial (300ml)', price: 18.00, subcategory: 'Nacionais' },
-    { name: 'Taça de Vinho Tinto Suave Colonial (300ml)', price: 18.00, subcategory: 'Nacionais' },
-    { name: 'Rutini Malbec', price: 279.00, subcategory: 'Argentinos' },
-    { name: 'DV Catena Malbec', price: 199.00, subcategory: 'Argentinos' },
-    { name: 'DV Catena Cabernet Malbec', price: 179.00, subcategory: 'Argentinos' },
-    { name: 'Angelica Zapata Cabernet', price: 269.00, subcategory: 'Argentinos' },
-    { name: 'Angelica Zapata Malbec', price: 279.00, subcategory: 'Argentinos' },
-    { name: 'Cordero com Piel de Lobo Malbec', price: 79.00, subcategory: 'Argentinos' },
-    { name: 'Cordero del Lobo Chardonay', price: 79.00, subcategory: 'Argentinos' },
-    { name: 'Cordero Rose Malbec', price: 79.00, subcategory: 'Argentinos' },
-    { name: 'Perro Callejero Malbec', price: 109.00, subcategory: 'Argentinos' },
-    { name: 'La Linda Chardonay', price: 109.00, subcategory: 'Argentinos' },
-    { name: 'La Linda Rose Malbec', price: 109.00, subcategory: 'Argentinos' },
-    { name: 'Latitude 33 Malbec', price: 109.00, subcategory: 'Argentinos' }
+  'Massas & Risotos': [
+    { name: 'Espaguete á bolonhesa', price: 57.00, description: 'Espaguete artesanal, molho vermelho, queijo e iscas de filé', subcategory: 'Massas Artesanais' },
+    { name: 'Espaguete á Carbonara', price: 62.00, description: 'Espaguete artesanal, bacon, gemas, molho branco e parmesão', subcategory: 'Massas Artesanais' },
+    { name: 'Espaguete á São Luiz', price: 68.00, description: 'Espaguete artesanal, molho branco, com iscas de filé e champignon', subcategory: 'Massas Artesanais' },
+    { name: 'Espaguete ao funghi', price: 85.00, description: 'Espaguete artesanal, molho branco, funghi grelhado e iscas de filé', subcategory: 'Massas Artesanais' },
+    { name: 'Espaguete camarão', price: 92.00, description: 'Espaguete artesanal, molho branco, camarão grelhado', subcategory: 'Massas Artesanais' },
+    { name: 'Fettuccine São Luiz', price: 85.00, description: 'Fettuccine artesanal, rúcula, tomate seco, escalopes de filé e molho 4 queijos.', subcategory: 'Massas Artesanais' },
+    { name: 'Nhoque á bolonhesa', price: 65.00, description: 'Nhoque de batata, molho de tomate e carne', subcategory: 'Massas Artesanais' },
+    { name: 'Sorrentino de presunto e queijo', price: 65.00, description: 'Sorrentino de presunto e queijo e molho Rosse', subcategory: 'Massas Artesanais' },
+    { name: 'Sorrentino de presunto e queijo á bolonhesa', price: 70.00, description: 'Sorrentino de presunto e queijo, molho vermelho e iscas de filé', subcategory: 'Massas Artesanais' },
+    { name: 'Ravióli de Espinafre e Ricota', price: 70.00, description: 'Ravióli de espinafre e ricota flambado na manteiga com tempo verde', subcategory: 'Massas Artesanais' },
+    { name: 'Ravióli de Espinafre e Ricota á bolonhesa', price: 75.00, description: 'Ravióli de espinafre e ricota, molho vermelho e iscas de filé', subcategory: 'Massas Artesanais' },
+    
+    { name: 'Risoto de Camarão * Empratado, porção p/1 pessoa', price: 62.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, parmesão, vinho branco e camarão grelhado', subcategory: 'Risotos Especiais' },
+    { name: 'Risoto ao Funghi * Empratado, porção p/1 pessoa', price: 61.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, parmesão, vinho branco, Funghi e medalhões de filé grelhado', subcategory: 'Risotos Especiais' },
+    { name: 'Risoto de abóbora cabotiá * Empratado, porção p/1 pessoa', price: 61.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, abóbora cabotiá, parmesão, vinho branco e medalhões de filé grelhado', subcategory: 'Risotos Especiais' },
+    { name: 'Risoto de salmão e limão silciliano * Empratado, porção p/1 pessoa', price: 69.00, description: 'Arroz arbóreo, raspas de limão siciliano, salmão grelhado, cebola, alho poro, manteiga, palmito, parmesão, vinho branco', subcategory: 'Risotos Especiais' },
+    { name: 'Risoto de rúcula c/ salmão * Empratado, porção p/1 pessoa', price: 69.00, description: 'Arroz arbóreo, rúcula, salmão grelhado, tomate seco, cebola, alho poro, manteiga, palmito, parmesão, vinho branco', subcategory: 'Risotos Especiais' },
+    { name: 'Risoto de gorgonzola c/ filé * Empratado, porção p/1 pessoa', price: 64.00, description: 'Arroz arbóreo, cebola, alho poro, gorgonzola, manteiga, parmesão, vinho branco e filé grelhado', subcategory: 'Risotos Especiais' }
   ],
-  'Entradas': [
-    { name: 'Pastéis Presunto e Queijo (6 unidades)', price: 9.00 },
-    { name: 'Pastéis carne (6 unidades)', price: 16.00 },
-    { name: 'Pastéis camarão (6 unidades)', price: 22.00 },
-    { name: 'Bolinho de Peixe (5 unidades)', price: 9.50 },
-    { name: 'Bolinho de Bacalhau (6 unidades)', price: 32.00 },
-    { name: 'Picadinho de Filé', price: 45.00 },
-    { name: 'Iscas de Frango a Milanesa', price: 30.00, description: '250g de iscas de frango a milanesa' },
-    { name: 'Camarão a Milanesa', price: 89.00 },
-    { name: 'Iscas de Peixe a Milanesa', price: 50.00, description: '350g de iscas de peixe a milanesa' },
-    { name: 'Tilápia a Milanesa', price: 40.00, description: '350g de iscas de peixe a milanesa' },
-    { name: 'Tábua de Frios', price: 50.00, description: 'Queijo, presunto, pepino, azeitona e salame' },
-    { name: 'Batata Frita', price: 30.00, description: '300g de batata palito' },
-    { name: 'Batata Frita c/ chedder e bacon', price: 55.00, description: 'Batata palito, bacon e queijo chedder' }
-  ],
-  'Porções': [
-    { name: 'Arroz', price: 13.00 },
-    { name: 'Feijão', price: 13.00 },
-    { name: 'Ovo', price: 4.00 },
-    { name: 'Batata frita (adicional)', price: 5.00 }
-  ],
-  'Lanches': [
-    { name: 'Bauru São Luiz', price: 44.00, description: 'Iscas de filé (200g), queijo, presunto, alface, tomate, milho, ervilha, Fritas e ovo' },
-    { name: 'Xis Bacon', price: 48.00, description: 'Bacon, presunto, queijo, milho, ervilha, tomate, alface, maionese, ovo' },
-    { name: 'Torrada Simples', price: 16.00, description: 'Presunto e queijo' },
-    { name: 'Torrada completa', price: 24.00, description: 'Presunto, queijo, tomate, alface, ovo' },
-    { name: 'Pizza Família', price: 70.00, description: 'Frango com requeijão, mussarela, calabresa, lombo com requeijão, bacon e chedder' },
-    { name: 'Pizza Média', price: 58.00, description: 'Frango com requeijão, mussarela, calabresa, lombo com requeijão, bacon e chedder' }
-  ],
-  'Sopas': [
-    { name: 'Canja * Servido na sopeira, p/1 pessoa', price: 27.00, description: 'Arroz, frango, cenoura e batata' },
-    { name: 'Sopa de Capeletti * Servido na sopeira, p/1 pessoa', price: 33.00, description: 'Carne ou frango' },
-    { name: 'Sopa de Capeletti * Servido na sopeira, p/2 pessoas', price: 60.00, description: 'Carne ou frango' }
-  ],
-  'Saladas': [
-    { name: 'Mix de folhas * Empratado, porção p/1 pessoa', price: 19.00, description: 'Alface, rúcula, tomate e cebola roxa' },
-    { name: 'Salada Ceasar * Empratado, porção p/1 pessoa', price: 33.00, description: 'Frango grelhado, alface americana, uva passa, molho e crótons' },
-    { name: 'Salpicão * Empratado, porção p/1 pessoa', price: 22.00, description: 'Frango desfiado, maionese, cenoura ralada, pimentões picados, batata palha, presunto e queijo' }
-  ],
-  'Omeletes': [
-    { name: 'Omeletes de legumes', price: 27.00 },
-    { name: 'Omelete de presunto e queijo', price: 31.00 },
-    { name: 'Omelete de presunto, queijo e salaminho', price: 35.00 }
-  ],
-  'Risotos': [
-    { name: 'Risoto de Camarão * Empratado, porção p/1 pessoa', price: 62.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, parmesão, vinho branco e camarão grelhado' },
-    { name: 'Risoto ao Funghi * Empratado, porção p/1 pessoa', price: 61.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, parmesão, vinho branco, Funghi e medalhões de filé grelhado' },
-    { name: 'Risoto de abóbora cabotiá * Empratado, porção p/1 pessoa', price: 61.00, description: 'Arroz arbóreo, cebola, alho poro, manteiga, abóbora cabotiá, parmesão, vinho branco e medalhões de filé grelhado' },
-    { name: 'Risoto de salmão e limão silciliano * Empratado, porção p/1 pessoa', price: 69.00, description: 'Arroz arbóreo, raspas de limão siciliano, salmão grelhado, cebola, alho poro, manteiga, palmito, parmesão, vinho branco' },
-    { name: 'Risoto de rúcula c/ salmão * Empratado, porção p/1 pessoa', price: 69.00, description: 'Arroz arbóreo, rúcula, salmão grelhado, tomate seco, cebola, alho poro, manteiga, palmito, parmesão, vinho branco' },
-    { name: 'Risoto de gorgonzola c/ filé * Empratado, porção p/1 pessoa', price: 64.00, description: 'Arroz arbóreo, cebola, alho poro, gorgonzola, manteiga, parmesão, vinho branco e filé grelhado' }
-  ],
-  'Peixes e Frutos do Mar': [
-    { name: 'Salmão ao molho mostarda', price: 104.00, description: 'Salmão grelhado no azeite de oliva, acompanhado de molho de mostarda, mel e nata; batata elegante (com molho branco e queijo ralado gratinado) e arroz' },
-    { name: 'Salmão ao molho maracujá', price: 92.00, description: 'Salmão grelhado com molho de maracujá, arroz e gratinado de batatas' },
-    { name: 'Salmão ao molho alcaparras', price: 116.00, description: 'Salmão grelhado, molho com alcaparras (molho branco com alcaparras), champignon, batata souté e arroz' },
-    { name: 'Tilápia a São Luiz', price: 72.00, description: 'Filé de tilápia a milanesa, cenoura, cebola, brócolis grelhados e arroz' },
-    { name: 'Tilápia a siciliana', price: 65.00, description: 'Filé de tilápia grelhado crisp de cebola (cebola meia lua frita), arroz e batata chips' },
-    { name: 'Traíra a São Luiz', price: 87.00, description: 'Filé de traíra a milanesa acompanhada de legumes cozidos, ovos e arroz.' },
-    { name: 'Traíra a siciliana', price: 76.00, description: 'Filé de traíra frita, crisp de cebola (cebola meia lua frita), batata chips, molho com limão e arroz' },
-    { name: 'Traíra ao molho escabeche', price: 73.00, description: 'Filé de traíra frita, arroz e molho ao escabeche (tomate e cebola)' },
-    { name: 'Traíra ao molho de camarão', price: 113.00, description: 'Filé de traíra frita, de molho de camarão e arroz' }
-  ],
-  'Carnes': [
-    { name: 'Filé Acebolado', price: 65.00, description: 'Medalhões de filé (200g) com cebola grelhada, arroz, batata frita mix de folhas e ovo' },
-    { name: 'Filé Grelhado', price: 58.00, description: 'Arroz, filé grelhado (200g), alface e tomate' },
-    { name: 'Filé a Milanesa', price: 68.00, description: 'Filé a milanesa (200g), arroz, batata frita, mix de folhas e ovo' },
-    { name: 'Filé a Parmegiana', price: 87.00, description: 'Filé empanado (200g), presunto, molho de tomate, queijo gratinado, arroz, batata frita' },
-    { name: 'Tornedos de Filé', price: 85.00, description: 'Medalhões de filé (200g) envolto com tiras de bacon ao molho de vinho, arroz, batata frita' },
-    { name: 'Medalhões de Filé', price: 77.00, description: 'Medalhões de filé (200g) envolto com tiras de bacon, arroz, batata frita' },
-    { name: 'A La Minuta de Filé', price: 78.00, description: 'Filé grelhado (200g), arroz, feijão, batata frita, mix de folhas e ovo' },
-    { name: 'Estrogonof de Filé', price: 81.00, description: 'Iscas de filé grelhado (250g), molho de strogonof, arroz e batata palha' },
-    { name: 'Carreteiro de Charque * Servido na panela de ferro, p/ 1 pessoa', price: 55.00, description: 'Charque receita tradicional de carreteiro de charque.' },
-    { name: 'Carreteiro de Filé * Servido na panela de ferro, p/ 1 pessoa', price: 58.00, description: 'Iscas de filé, cebola, tomate, molho de tomate e arroz' }
-  ],
-  'Massas': [
-    { name: 'Espaguete á bolonhesa', price: 57.00, description: 'Espaguete artesanal, molho vermelho, queijo e iscas de filé' },
-    { name: 'Espaguete á Carbonara', price: 62.00, description: 'Espaguete artesanal, bacon, gemas, molho branco e parmesão' },
-    { name: 'Espaguete á São Luiz', price: 68.00, description: 'Espaguete artesanal, molho branco, com iscas de filé e champignon' },
-    { name: 'Espaguete ao funghi', price: 85.00, description: 'Espaguete artesanal, molho branco, funghi grelhado e iscas de filé' },
-    { name: 'Espaguete camarão', price: 92.00, description: 'Espaguete artesanal, molho branco, camarão grelhado' },
-    { name: 'Fettuccine São Luiz', price: 85.00, description: 'Fettuccine artesanal, rúcula, tomate seco, escalopes de filé e molho 4 queijos.' },
-    { name: 'Nhoque á bolonhesa', price: 65.00, description: 'Nhoque de batata, molho de tomate e carne' },
-    { name: 'Sorrentino de presunto e queijo', price: 65.00, description: 'Sorrentino de presunto e queijo e molho Rosse' },
-    { name: 'Sorrentino de presunto e queijo á bolonhesa', price: 70.00, description: 'Sorrentino de presunto e queijo, molho vermelho e iscas de filé' },
-    { name: 'Ravióli de Espinafre e Ricota', price: 70.00, description: 'Ravióli de espinafre e ricota flambado na manteiga com tempero verde' },
-    { name: 'Ravióli de Espinafre e Ricota á bolonhesa', price: 75.00, description: 'Ravióli de espinafre e ricota, molho vermelho e iscas de filé' }
-  ],
-  'Frango': [
-    { name: 'Frango Grelhado', price: 45.00, description: 'Frango grelhado (200g), arroz branco, mix de folhas' },
-    { name: 'Frango a parmegiana', price: 69.00, description: 'Filé de frango (200g) empanado e frito, arroz, batata frita e mix de folhas' },
-    { name: 'Frango a milanesa', price: 48.00, description: 'Filé de frango (200g), arroz branco, alface e tomate' },
-    { name: 'A La minuta de Frango', price: 60.00, description: 'Filé de frango grelhado (200g), arroz, batata frita, feijão, mix de folas e ovo' },
-    { name: 'Strogonof de Frango', price: 62.00, description: 'Iscas de frango (200g), arroz, batata palha e molho strogonof' }
+  'Lanches & Pizzas': [
+    { name: 'Bauru São Luiz', price: 44.00, description: 'Iscas de filé (200g), queijo, presunto, alface, tomate, milho, ervilha, Fritas e ovo', subcategory: 'Lanches Completos' },
+    { name: 'Xis Bacon', price: 48.00, description: 'Bacon, presunto, queijo, milho, ervilha, tomate, alface, maionese, ovo', subcategory: 'Lanches Completos' },
+    { name: 'Torrada Simples', price: 16.00, description: 'Presunto e queijo', subcategory: 'Lanches Completos' },
+    { name: 'Torrada completa', price: 24.00, description: 'Presunto, queijo, tomate, alface, ovo', subcategory: 'Lanches Completos' },
+    
+    { name: 'Pizza Família', price: 70.00, description: 'Frango com requeijão, mussarela, calabresa, lombo com requeijão, bacon e chedder', subcategory: 'Pizzas Especiais' },
+    { name: 'Pizza Média', price: 58.00, description: 'Frango com requeijão, mussarela, calabresa, lombo com requeijão, bacon e chedder', subcategory: 'Pizzas Especiais' }
   ],
   'Sobremesas': [
-    { name: 'Pudim (leite, leite condensado e ovos)', price: 8.00 },
-    { name: 'Petit gâteau c/ sorvete de creme', price: 25.00 }
+    { name: 'Pudim (leite, leite condensado e ovos)', price: 8.00, subcategory: 'Sobremesas' },
+    { name: 'Petit gâteau c/ sorvete de creme', price: 25.00, subcategory: 'Sobremesas' }
   ]
 }
 
@@ -263,6 +248,15 @@ async function run() {
         isAuthenticated = true
       }
     }
+
+    console.log('\n--- 0. LIMPANDO BANCO DE DADOS (RESET COMPLETO) ---')
+    const { error: clearProductsError } = await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+    if (clearProductsError) throw new Error('Erro ao limpar produtos: ' + clearProductsError.message)
+    
+    const { error: clearCategoriesError } = await supabase.from('categories').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+    if (clearCategoriesError) throw new Error('Erro ao limpar categorias: ' + clearCategoriesError.message)
+    
+    console.log('Banco de dados limpo com sucesso!')
 
     console.log('\n--- 1. CADASTRANDO CATEGORIAS ---')
     const categoryMap = {}
