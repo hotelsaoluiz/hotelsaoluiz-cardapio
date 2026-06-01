@@ -24,7 +24,6 @@ import {
   EyeOff, 
   Loader2,
   ListOrdered,
-  Users,
   Database,
   HardDrive,
   ArrowUp,
@@ -77,13 +76,6 @@ export function Admin() {
   const [deletingCategory, setDeletingCategory] = useState(null)
   const [isCategoryDeleting, setIsCategoryDeleting] = useState(false)
 
-  // States for User Creation / New Admin Management
-  const [newUserEmail, setNewUserEmail] = useState('')
-  const [newUserPassword, setNewUserPassword] = useState('')
-  const [newUserConfirmPassword, setNewUserConfirmPassword] = useState('')
-  const [isCreatingUser, setIsCreatingUser] = useState(false)
-  const [userCreationMessage, setUserCreationMessage] = useState(null)
-  const [userCreationError, setUserCreationError] = useState(null)
 
   // Database & Storage Size Stats States
   const [storageFiles, setStorageFiles] = useState([])
@@ -424,72 +416,6 @@ export function Admin() {
     }
   }
 
-  // Handle New Admin User Registration
-  const handleCreateUser = async (e) => {
-    e.preventDefault()
-    setUserCreationMessage(null)
-    setUserCreationError(null)
-
-    if (!newUserEmail.trim() || !newUserPassword || !newUserConfirmPassword) {
-      setUserCreationError('Por favor, preencha todos os campos.')
-      return
-    }
-
-    if (!newUserEmail.includes('@')) {
-      setUserCreationError('Por favor, digite um e-mail válido contendo @.')
-      return
-    }
-
-    if (newUserPassword.length < 6) {
-      setUserCreationError('A senha deve ter no mínimo 6 caracteres.')
-      return
-    }
-
-    if (newUserPassword !== newUserConfirmPassword) {
-      setUserCreationError('As senhas digitadas não coincidem.')
-      return
-    }
-
-    setIsCreatingUser(true)
-    try {
-      // Instanciamos um cliente secundário para registrar o novo usuário sem interferir na sessão ativa!
-      const registerClient = createClient(
-        import.meta.env.VITE_SUPABASE_URL,
-        import.meta.env.VITE_SUPABASE_ANON_KEY,
-        {
-          auth: {
-            persistSession: false,
-            autoRefreshToken: false,
-            detectSessionInUrl: false
-          }
-        }
-      )
-
-      const { data, error } = await registerClient.auth.signUp({
-        email: newUserEmail.trim(),
-        password: newUserPassword,
-        options: {
-          data: {
-            role: 'admin'
-          }
-        }
-      })
-
-      if (error) throw error
-
-      setUserCreationMessage(
-        `Usuário "${newUserEmail.trim()}" cadastrado com sucesso! Se ele constar como pendente no painel do Supabase, lembre-se de confirmar o e-mail em (Authentication -> Users -> Confirm User) ou desabilitar o Email Double Opt-In nas configurações.`
-      )
-      setNewUserEmail('')
-      setNewUserPassword('')
-      setNewUserConfirmPassword('')
-    } catch (err) {
-      console.error('Erro ao cadastrar administrador:', err)
-      setUserCreationError(err.message || 'Falha ao cadastrar novo administrador.')
-    } finally {
-      setIsCreatingUser(false)
-    }
-  }
 
   const formatBytes = (bytes, decimals = 2) => {
     if (bytes === 0) return '0 Bytes'
@@ -575,15 +501,6 @@ export function Admin() {
           >
             <QrCode className="w-4 h-4" />
             QR Code
-          </button>
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`w-full text-left px-4 py-3 rounded-admin text-xs uppercase tracking-widest font-semibold flex items-center gap-3 transition-colors ${
-              activeTab === 'users' ? 'bg-navy text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            Administradores
           </button>
           <button
             onClick={() => setActiveTab('storage')}
@@ -1040,98 +957,7 @@ export function Admin() {
             </div>
           )}
 
-          {/* TAB 4: USERS / ADMINISTRATORS MANAGEMENT */}
-          {activeTab === 'users' && (
-            <div className="max-w-lg mx-auto py-6">
-              <div className="mb-6">
-                <h2 className="text-lg font-bold text-slate-900">Cadastrar Administradores</h2>
-                <p className="text-xs text-slate-500">
-                  Cadastre novos e-mails e senhas de acesso para que outras pessoas (ou os proprietários do hotel) possam gerenciar o cardápio.
-                </p>
-              </div>
 
-              {userCreationMessage && (
-                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-admin text-xs text-green-800 leading-relaxed">
-                  <div className="font-bold mb-1">🎉 Sucesso!</div>
-                  {userCreationMessage}
-                </div>
-              )}
-
-              {userCreationError && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-admin text-xs text-red-800 leading-relaxed">
-                  <div className="font-bold mb-1">❌ Erro ao cadastrar:</div>
-                  {userCreationError}
-                </div>
-              )}
-
-              <form onSubmit={handleCreateUser} className="space-y-4 bg-slate-50 border border-slate-200 rounded-admin p-6 shadow-sm">
-                <div>
-                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                    E-mail do Novo Administrador
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={newUserEmail}
-                    onChange={(e) => setNewUserEmail(e.target.value)}
-                    placeholder="Ex: proprietario@hotelsaoluiz.com"
-                    disabled={isCreatingUser}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                      Senha de Acesso
-                    </label>
-                    <input
-                      type="password"
-                      required
-                      value={newUserPassword}
-                      onChange={(e) => setNewUserPassword(e.target.value)}
-                      placeholder="Mínimo 6 caracteres"
-                      disabled={isCreatingUser}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                      Confirmar Senha
-                    </label>
-                    <input
-                      type="password"
-                      required
-                      value={newUserConfirmPassword}
-                      onChange={(e) => setNewUserConfirmPassword(e.target.value)}
-                      placeholder="Repita a senha"
-                      disabled={isCreatingUser}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-admin text-sm bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isCreatingUser}
-                  className="w-full py-2.5 mt-2 bg-navy hover:bg-navy-mid text-white font-ui font-semibold rounded-admin text-xs uppercase tracking-widest transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
-                >
-                  {isCreatingUser ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Cadastrando Administrador...
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-4 h-4" />
-                      Cadastrar Administrador
-                    </>
-                  )}
-                </button>
-              </form>
-            </div>
-          )}
           {/* TAB 4: DATABASE & STORAGE */}
           {activeTab === 'storage' && (
             <div>
