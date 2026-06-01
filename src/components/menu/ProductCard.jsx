@@ -22,7 +22,7 @@ export function ProductCard({ product }) {
       onMouseLeave={() => setIsHovered(false)}
       style={{
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row', // Horizontal List Layout
         height: '100%',
         backgroundColor: isHovered ? 'var(--navy-light)' : 'var(--bg-card)',
         border: 'var(--border-navy)',
@@ -34,61 +34,15 @@ export function ProductCard({ product }) {
         overflow: 'hidden',
       }}
     >
-      {/* Product Image with Overlay */}
-      {image_url ? (
-        <div style={{ position: 'relative', width: '100%', aspectRatio: '4/3', overflow: 'hidden' }}>
-          <img
-            src={image_url}
-            alt={name}
-            loading="lazy"
-            decoding="async"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-            }}
-          />
-          {/* Decorative Overlay */}
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'rgba(30,42,122,0.06)',
-              pointerEvents: 'none',
-            }}
-          />
-        </div>
-      ) : (
-        /* Fallback placeholder matching layout aspect-ratio */
-        <div
-          style={{
-            width: '100%',
-            aspectRatio: '4/3',
-            backgroundColor: 'var(--bg-surface)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--bronze)',
-            fontFamily: 'var(--font-ui)',
-            fontSize: '10px',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            borderBottom: '1px solid rgba(201,168,76,0.1)',
-          }}
-        >
-          Sem Imagem
-        </div>
-      )}
-
-      {/* Card Content Area - optimized padding for mobile side-by-side (12px instead of 16px) */}
+      {/* Card Content Area - Text on the left, takes remaining space */}
       <div
         style={{
-          padding: '12px',
+          padding: '16px', // Increased padding for horizontal layout
           display: 'flex',
           flexDirection: 'column',
           flexGrow: 1,
           justifyContent: 'space-between',
+          minWidth: 0, // Allows text truncation to work if needed later
         }}
       >
         <div>
@@ -96,13 +50,13 @@ export function ProductCard({ product }) {
           <div
             style={{
               display: 'flex',
-              flexDirection: 'column', // Stack vertically on small column views to maximize title space
+              flexDirection: 'column',
               alignItems: 'flex-start',
               gap: '6px',
               marginBottom: '8px',
             }}
           >
-            {/* Availability Badges - scaled to 10px bold */}
+            {/* Availability Badges */}
             {available ? (
               <span
                 style={{
@@ -142,8 +96,8 @@ export function ProductCard({ product }) {
             <h4
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '20px', // Enlarged from 17px for excellent senior legibility
-                fontWeight: '600', // Made thicker/bolder
+                fontSize: '20px', 
+                fontWeight: '600', 
                 color: 'var(--navy-dark)',
                 margin: 0,
                 lineHeight: '1.25',
@@ -153,12 +107,12 @@ export function ProductCard({ product }) {
             </h4>
           </div>
 
-          {/* Description - scaled to 12px for high readability */}
+          {/* Description */}
           {description && (
             <p
               style={{
                 fontFamily: 'var(--font-ui)',
-                fontSize: '12px', // Enlarged from 10px
+                fontSize: '12px',
                 letterSpacing: '0.04em',
                 lineHeight: '1.5',
                 color: 'var(--bronze)',
@@ -170,13 +124,13 @@ export function ProductCard({ product }) {
           )}
         </div>
 
-        {/* Price Display - scaled to 21px bold */}
+        {/* Price Display */}
         <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline' }}>
           <span
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '21px', // Enlarged from 19px
-              fontWeight: '600', // Made thicker/bolder
+              fontSize: '21px',
+              fontWeight: '600',
               color: 'var(--navy)',
             }}
           >
@@ -184,6 +138,42 @@ export function ProductCard({ product }) {
           </span>
         </div>
       </div>
+
+      {/* Product Image Area - Placed on the right side if exists */}
+      {image_url && (
+        <div style={{ 
+          position: 'relative', 
+          width: '120px', // Fixed width for image column
+          minHeight: '120px', // Ensures a minimum height even if text is very short
+          flexShrink: 0, // Prevent image from shrinking
+          borderLeft: '1px solid rgba(201,168,76,0.15)',
+          backgroundColor: 'var(--bg-surface)'
+        }}>
+          <img
+            src={image_url}
+            alt={name}
+            loading="lazy"
+            decoding="async"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+            }}
+          />
+          {/* Decorative Overlay */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(30,42,122,0.06)',
+              pointerEvents: 'none',
+            }}
+          />
+        </div>
+      )}
     </article>
   )
 }

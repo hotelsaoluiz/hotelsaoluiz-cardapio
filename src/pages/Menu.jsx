@@ -101,13 +101,13 @@ export function Menu() {
 
   // Pure Skeleton Loader conforming to requirements
   const SkeletonLoader = () => (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 w-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
           className="skeleton-item"
           style={{
-            aspectRatio: '4/3',
+            height: '140px',
             background: 'var(--navy-light)',
             opacity: 0.4,
             borderRadius: '0px',
@@ -262,8 +262,8 @@ export function Menu() {
                         </h3>
                       )}
 
-                      {/* Grid matching exactly two columns on mobile and auto scaling on desktop */}
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {/* Grid with 1 column on mobile (list style) and 2 on desktop */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {subProducts.map((product) => (
                           <ProductCard key={product.id} product={product} />
                         ))}
