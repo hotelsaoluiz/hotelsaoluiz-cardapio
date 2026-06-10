@@ -427,6 +427,7 @@ export function Admin() {
   }
 
   const formatBrl = (price) => {
+    if (price === 0 || price === null || price === undefined) return 'Sem preço'
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',

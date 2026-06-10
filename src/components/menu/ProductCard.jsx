@@ -125,18 +125,20 @@ export function ProductCard({ product }) {
         </div>
 
         {/* Price Display */}
-        <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline' }}>
-          <span
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: '21px',
-              fontWeight: '600',
-              color: 'var(--navy)',
-            }}
-          >
-            {formattedPrice}
-          </span>
-        </div>
+        {price > 0 && (
+          <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline' }}>
+            <span
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '21px',
+                fontWeight: '600',
+                color: 'var(--navy)',
+              }}
+            >
+              {formattedPrice}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Product Image Area - Placed on the right side if exists */}

@@ -8,12 +8,12 @@ const schema = z.object({
   name: z.string().min(2, 'Nome obrigatório'),
   description: z.string().optional().or(z.literal('')),
   price: z.preprocess((val) => {
-    if (val === '' || val === null || val === undefined) return undefined
+    if (val === '' || val === null || val === undefined) return 0
     const parsed = Number(val)
-    return isNaN(parsed) ? undefined : parsed
+    return isNaN(parsed) ? 0 : parsed
   }, z.number({
     invalid_type_error: 'Informe um preço',
-  }).positive('Preço inválido')),
+  }).min(0, 'Preço inválido')),
   category_id: z.string().uuid().optional().nullable().or(z.literal('')),
   subcategory: z.string().optional().or(z.literal('')),
   available: z.boolean().default(true),
@@ -166,7 +166,7 @@ export function ProductForm({
             {...register('price')}
             disabled={isSaving}
             className="w-full px-3 py-2 border border-slate-300 rounded-admin focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy text-sm transition-all"
-            placeholder="Ex: 89.90"
+            placeholder="Ex: 89.90 (ou 0 para sem preço)"
           />
           {errors.price && (
             <p className="text-red-600 text-xs mt-1 font-medium">{errors.price.message}</p>
