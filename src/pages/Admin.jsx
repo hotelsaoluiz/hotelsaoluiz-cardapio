@@ -56,6 +56,8 @@ export function Admin() {
   const [editingSubcat, setEditingSubcat] = useState(null) // { categoryId, name }
   const [editingSubcatName, setEditingSubcatName] = useState('')
   const [isUpdatingSubcategory, setIsUpdatingSubcategory] = useState(false)
+  const [addingSubcatToCategory, setAddingSubcatToCategory] = useState(null)
+  const [newSubcatNameValue, setNewSubcatNameValue] = useState('')
   
   // Modals & States for Product
   const [isProductModalOpen, setIsProductModalOpen] = useState(false)
@@ -303,12 +305,42 @@ export function Admin() {
     }
   }
 
-  // Handle Subcategory Deletion (Clear subcategory field for products)
+  // Handle Subcategory Creation (Create ghost product)
+  const handleCreateSubcategory = async (categoryId) => {
+    if (!newSubcatNameValue.trim()) return
+    setIsUpdatingSubcategory(true)
+    try {
+      await createProduct({
+        name: '__SUBCAT__',
+        subcategory: newSubcatNameValue.trim(),
+        price: 0,
+        category_id: categoryId,
+        available: false
+      })
+      setNewSubcatNameValue('')
+      setAddingSubcatToCategory(null)
+    } catch (err) {
+      alert('Erro ao criar subcategoria: ' + err.message)
+    } finally {
+      setIsUpdatingSubcategory(false)
+    }
+  }
+
+  // Handle Subcategory Deletion (Clear subcategory field for products and delete ghost products)
   const handleDeleteSubcategory = async (categoryId, subcategoryName) => {
     if (!window.confirm(`Tem certeza que deseja remover a subcategoria "${subcategoryName}" de todos os pratos? Os pratos continuarão existindo, mas sem subcategoria.`)) {
       return
     }
     try {
+      // 1. Delete ghost products for this subcategory
+      await supabase
+        .from('products')
+        .delete()
+        .eq('name', '__SUBCAT__')
+        .eq('category_id', categoryId)
+        .eq('subcategory', subcategoryName)
+
+      // 2. Clear subcategory field for real products
       const { error } = await supabase
         .from('products')
         .update({ subcategory: '' })
@@ -541,7 +573,7 @@ export function Admin() {
                   <Loader2 className="w-8 h-8 text-navy animate-spin mb-3" />
                   <p className="text-sm font-medium text-slate-500">Carregando produtos...</p>
                 </div>
-              ) : products.length === 0 ? (
+              ) : products.filter(p => p.name !== '__SUBCAT__').length === 0 ? (
                 <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-admin">
                   <Utensils className="w-10 h-10 text-slate-300 mx-auto mb-3" />
                   <h3 className="text-sm font-bold text-slate-800">Nenhum produto cadastrado</h3>
@@ -562,7 +594,7 @@ export function Admin() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200 text-xs">
-                      {products.map((prod) => {
+                      {products.filter(p => p.name !== '__SUBCAT__').map((prod) => {
                         const cat = categories.find((c) => c.id === prod.category_id)
                         return (
                           <tr key={prod.id} className="hover:bg-slate-50/50 transition-colors">
@@ -855,7 +887,7 @@ export function Admin() {
 
                         {/* Subcategories Subsection */}
                         {!isEditing && (
-                          <div className="mt-1 ml-7 pl-4 border-l-2 border-slate-200/80 space-y-1.5">
+                          <div className="mt-1 ml-7 pl-4 border-l-2 border-slate-200/80 space-y-2">
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                               Subcategorias deste grupo:
                             </span>
@@ -944,9 +976,49 @@ export function Admin() {
                               </div>
                             ) : (
                               <p className="text-xs text-slate-400 italic">
-                                Nenhuma subcategoria cadastrada. Elas são criadas automaticamente ao adicionar um prato novo na aba "Produtos".
+                                Nenhuma subcategoria cadastrada nesta categoria.
                               </p>
                             )}
+                            
+                            {/* Create Subcategory Input */}
+                            <div className="pt-1">
+                              {addingSubcatToCategory === cat.id ? (
+                                <div className="flex items-center gap-2 max-w-sm">
+                                  <input
+                                    type="text"
+                                    value={newSubcatNameValue}
+                                    onChange={(e) => setNewSubcatNameValue(e.target.value)}
+                                    placeholder="Nome da subcategoria..."
+                                    className="flex-1 px-2.5 py-1.5 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy"
+                                    autoFocus
+                                  />
+                                  <button
+                                    onClick={() => handleCreateSubcategory(cat.id)}
+                                    disabled={!newSubcatNameValue.trim() || isUpdatingSubcategory}
+                                    className="px-3 py-1.5 bg-navy text-white text-xs font-medium rounded hover:bg-navy-mid transition-colors disabled:opacity-50"
+                                  >
+                                    Salvar
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setAddingSubcatToCategory(null)
+                                      setNewSubcatNameValue('')
+                                    }}
+                                    className="px-2.5 py-1.5 text-slate-500 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 text-xs font-medium rounded transition-colors"
+                                  >
+                                    Cancelar
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => setAddingSubcatToCategory(cat.id)}
+                                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-dashed border-slate-300 rounded text-[11px] font-medium text-slate-500 hover:text-navy hover:border-navy hover:bg-slate-50 transition-colors"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                  Nova Subcategoria
+                                </button>
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>

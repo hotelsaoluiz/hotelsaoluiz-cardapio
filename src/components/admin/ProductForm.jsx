@@ -28,8 +28,6 @@ export function ProductForm({
   isSaving = false,
 }) {
   const [imageUrl, setImageUrl] = useState(initialData?.image_url || '')
-  const [isNewSubcategory, setIsNewSubcategory] = useState(false)
-  const [customSubcategory, setCustomSubcategory] = useState('')
 
   const {
     register,
@@ -73,11 +71,6 @@ export function ProductForm({
       setValue('subcategory', initialData.subcategory || '')
       setValue('available', initialData.available)
       setImageUrl(initialData.image_url || '')
-      setIsNewSubcategory(false)
-      setCustomSubcategory('')
-    } else {
-      setIsNewSubcategory(false)
-      setCustomSubcategory('')
     }
   }, [initialData, setValue])
 
@@ -87,26 +80,7 @@ export function ProductForm({
       return
     }
     setValue('subcategory', '')
-    setIsNewSubcategory(false)
-    setCustomSubcategory('')
   }, [selectedCategoryId, setValue, initialData])
-
-  const handleSubcategorySelectChange = (e) => {
-    const val = e.target.value
-    if (val === '__NEW_SUBCAT__') {
-      setIsNewSubcategory(true)
-      setValue('subcategory', customSubcategory)
-    } else {
-      setIsNewSubcategory(false)
-      setValue('subcategory', val)
-    }
-  }
-
-  const handleCustomSubcategoryTextChange = (e) => {
-    const val = e.target.value
-    setCustomSubcategory(val)
-    setValue('subcategory', val)
-  }
 
   const handleFormSubmit = (data) => {
     // Normalise category_id to null if empty string
@@ -200,57 +174,18 @@ export function ProductForm({
           <label className="block text-xs font-semibold uppercase tracking-wider text-navy mb-1">
             Subcategoria
           </label>
-          {existingSubcategories.length > 0 ? (
-            !isNewSubcategory ? (
-              <select
-                value={existingSubcategories.includes(currentSubcategoryValue) ? currentSubcategoryValue : (currentSubcategoryValue === '' ? '' : '__NEW_SUBCAT__')}
-                onChange={handleSubcategorySelectChange}
-                disabled={isSaving}
-                className="w-full px-3 py-2 border border-slate-300 rounded-admin bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy text-sm transition-all"
-              >
-                <option value="">Sem subcategoria</option>
-                {existingSubcategories.map((sub) => (
-                  <option key={sub} value={sub}>
-                    {sub}
-                  </option>
-                ))}
-                <option value="__NEW_SUBCAT__" className="text-navy font-semibold">
-                  + Nova Subcategoria (escrever)...
-                </option>
-              </select>
-            ) : (
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={customSubcategory}
-                  onChange={handleCustomSubcategoryTextChange}
-                  disabled={isSaving}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-admin focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy text-sm transition-all flex-1"
-                  placeholder="Nova subcategoria..."
-                  autoFocus
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsNewSubcategory(false)
-                    setValue('subcategory', '')
-                  }}
-                  className="px-3 py-2 border border-slate-300 rounded-admin text-slate-500 hover:text-slate-700 bg-white hover:bg-slate-50 text-xs font-semibold transition-colors"
-                  title="Voltar para a lista"
-                >
-                  Voltar
-                </button>
-              </div>
-            )
-          ) : (
-            <input
-              type="text"
-              {...register('subcategory')}
-              disabled={isSaving}
-              className="w-full px-3 py-2 border border-slate-300 rounded-admin focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy text-sm transition-all"
-              placeholder="Ex: Vinhos, Pizzas"
-            />
-          )}
+          <select
+            {...register('subcategory')}
+            disabled={isSaving}
+            className="w-full px-3 py-2 border border-slate-300 rounded-admin bg-white focus:outline-none focus:ring-1 focus:ring-navy focus:border-navy text-sm transition-all"
+          >
+            <option value="">Sem subcategoria</option>
+            {existingSubcategories.filter(sub => sub !== '__SUBCAT__').map((sub) => (
+              <option key={sub} value={sub}>
+                {sub}
+              </option>
+            ))}
+          </select>
           {errors.subcategory && (
             <p className="text-red-600 text-xs mt-1 font-medium">{errors.subcategory.message}</p>
           )}
